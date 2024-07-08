@@ -1,3 +1,5 @@
+# tables.py
+
 from database.base import Base
 from database.session import engine
 from models.models import IceCream, Topping, OtherItem, Order, Inventory

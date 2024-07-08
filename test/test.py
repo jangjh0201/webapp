@@ -3,11 +3,11 @@ import sys
 import os
 
 # 프로젝트 루트 디렉토리를 sys.path에 추가
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "db")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from database.tables import initailize
 from database.session import SessionLocal
-from models.models import OtherItem, Topping
+from models.models import IceCream, Topping, OtherItem, Order, Inventory
 from crud.ice_cream import create_ice_cream, get_all_ice_creams
 from crud.topping import create_topping, get_all_toppings
 from crud.other_item import create_other_item, get_all_other_items
@@ -17,7 +17,7 @@ from crud.inventory import create_inventory, get_all_inventory
 
 def main():
     # 초기화
-    initailize
+    initailize()
 
     # 데이터베이스 연결
     db = SessionLocal()
