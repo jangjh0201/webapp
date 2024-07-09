@@ -1,9 +1,8 @@
-# other_item.py
-
 from sqlalchemy.orm import Session
 from models.models import OtherItem
 
 
+# 이름을 받아 기타 품목을 생성합니다.
 def create_other_item(db: Session, name: str, price: int):
     if db.query(OtherItem).filter(OtherItem.name == name).first():
         print(f"{name}은(는) 이미 등록된 품목입니다.")
@@ -15,10 +14,17 @@ def create_other_item(db: Session, name: str, price: int):
     return db_other_item
 
 
-def get_all_other_items(db: Session):
+# 이름으로 특정 기타 품목을 조회합니다.
+def read_other_item_by_name(db: Session, name: str):
+    return db.query(OtherItem).filter(OtherItem.name == name).first()
+
+
+# 모든 기타 품목들을 조회합니다.
+def read_all_other_items(db: Session):
     return db.query(OtherItem).all()
 
 
+# 이름으로 특정 기타 품목을 삭제합니다.
 def delete_other_item_by_name(db: Session, name: str):
     db_other_item = db.query(OtherItem).filter(OtherItem.name == name).first()
     if db_other_item:
@@ -29,6 +35,7 @@ def delete_other_item_by_name(db: Session, name: str):
         print(f"{name} 이 존재하지 않습니다.")
 
 
+# 모든 기타 품목을 삭제합니다.
 def delete_all_other_items(db: Session):
     db.query(OtherItem).delete()
     db.commit()

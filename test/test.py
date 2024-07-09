@@ -49,10 +49,10 @@ def main():
     create_inventory(db, "other_item", holder.id, 200)
 
     # 예제 주문 추가 (다중 토핑 포함, 스푼은 선택적)
-    create_order(db, "바닐라", topping_names=["초코볼", "시리얼", "오레오"])
-    create_order(db, "딸기", other_item_names=["홀더"], topping_names=["초코볼"])
-    create_order(db, "초콜릿", other_item_names=["숟가락", "홀더"])
-    create_order(db, "바닐라", topping_names=["초코볼", "시리얼"])
+    create_order(db, vanilla.id, toppings=[choco_ball.id, cereal.id, oreo.id])
+    create_order(db, strawberry.id, other_items=[holder.id], toppings=[choco_ball.id])
+    create_order(db, chocolate.id, other_items=[spoon.id, holder.id])
+    create_order(db, vanilla.id, toppings=[choco_ball.id, cereal.id])
 
     # 모든 아이스크림 조회
     ice_creams = get_all_ice_creams(db)

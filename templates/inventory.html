@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>재고</h2>
+<h3>아이스크림</h3>
+<ul>
+    {% for name, quantity in inventory_data['ice_cream'].items() %}
+    <li class="{% if name|length > 10 %}long-text{% endif %}">{{ name }}: {{ quantity }}개</li>
+    {% endfor %}
+</ul>
+
+<h3>토핑</h3>
+<ul>
+    {% for name, quantity in inventory_data['topping'].items() %}
+    <li class="{% if name|length > 10 %}long-text{% endif %}">{{ name }}: {{ quantity }}개</li>
+    {% endfor %}
+</ul>
+
+<h3>기타 품목</h3>
+<ul>
+    {% for name, quantity in inventory_data['other_item'].items() %}
+    <li class="{% if name|length > 10 %}long-text{% endif %}">{{ name }}: {{ quantity }}개</li>
+    {% endfor %}
+</ul>
+
+<h3>재고 업데이트</h3>
+<form action="/inventory/" method="post">
+    <input type="text" name="item_type" placeholder="품목 종류 (ice_cream, topping, other_item)">
+    <input type="number" name="item_id" placeholder="품목 ID">
+    <input type="number" name="quantity" placeholder="수량">
+    <button type="submit">재고 업데이트</button>
+</form>
+{% endblock %}
