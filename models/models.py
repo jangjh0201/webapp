@@ -36,7 +36,7 @@ class Inventory(Base):
 class Order(Base):
     __tablename__ = "order"
     id = Column(Float, primary_key=True, index=True)
-    ice_cream = Column(Integer, nullable=False)
-    toppings = Column(JSON, nullable=True)
-    other_items = Column(JSON, nullable=True)
+    ice_cream_id = Column(Integer, nullable=False)
+    topping_ids = Column(JSON, nullable=True)
+    other_item_ids = Column(JSON, nullable=True)
     order_time = Column(DateTime(timezone=True), server_default=func.now())
