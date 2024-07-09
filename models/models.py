@@ -6,28 +6,28 @@ from database.database import Base
 
 class IceCream(Base):
     __tablename__ = "ice_cream"
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Float, primary_key=True, index=True)
     name = Column(String(255), nullable=False, unique=True)
     price = Column(Integer, nullable=False)
 
 
 class Topping(Base):
     __tablename__ = "topping"
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Float, primary_key=True, index=True)
     name = Column(String(255), nullable=False, unique=True)
     price = Column(Integer, nullable=False)
 
 
 class OtherItem(Base):
     __tablename__ = "other_item"
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Float, primary_key=True, index=True)
     name = Column(String(255), nullable=False, unique=True)
     price = Column(Integer, nullable=False)
 
 
 class Inventory(Base):
     __tablename__ = "inventory"
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Float, primary_key=True, index=True)
     item_type = Column(String(50), nullable=False)
     item_id = Column(Integer, nullable=False)
     quantity = Column(Integer, nullable=False)
@@ -35,7 +35,7 @@ class Inventory(Base):
 
 class Order(Base):
     __tablename__ = "order"
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Float, primary_key=True, index=True)
     ice_cream = Column(Integer, nullable=False)
     toppings = Column(JSON, nullable=True)
     other_items = Column(JSON, nullable=True)
