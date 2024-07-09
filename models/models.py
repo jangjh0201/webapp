@@ -29,14 +29,14 @@ class Inventory(Base):
     __tablename__ = "inventory"
     id = Column(Float, primary_key=True, index=True)
     item_type = Column(String(50), nullable=False)
-    item_id = Column(Integer, nullable=False)
+    item_id = Column(Float, nullable=False)
     quantity = Column(Integer, nullable=False)
 
 
 class Order(Base):
     __tablename__ = "order"
     id = Column(Float, primary_key=True, index=True)
-    ice_cream_id = Column(Integer, nullable=False)
+    ice_cream_id = Column(Float, nullable=False)
     topping_ids = Column(JSON, nullable=True)
     other_item_ids = Column(JSON, nullable=True)
-    order_time = Column(DateTime(timezone=True), server_default=func.now())
+    order_time = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
