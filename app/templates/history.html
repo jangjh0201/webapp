@@ -1,0 +1,12 @@
+{% extends "header.html" %}
+
+{% block content %}
+<h2>주문 내역</h2>
+<ul>
+    {% for order in orders %}
+    <li>
+        ID: {{ order.id }} - 아이스크림: {{ order.ice_cream.name }} - 토핑: {% for topping in order.toppings %}{{ topping.name }} {% endfor %} - 소모품: {% for consumable in order.consumables %}{{ consumable.name }} {% endfor %} - 시간: {{ order.order_time }}
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

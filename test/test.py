@@ -1,4 +1,3 @@
-import json
 import sys
 import os
 
@@ -7,100 +6,120 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from database.database import initialize_tables
 from database.database import SessionLocal
-from models.models import IceCream, Topping, OtherItem, Order, Inventory
-from crud.ice_cream import create_ice_cream, get_all_ice_creams
-from crud.topping import create_topping, get_all_toppings
-from crud.other_item import create_other_item, get_all_other_items
-from crud.order import create_order, get_all_orders
-from crud.inventory import create_inventory, get_all_inventory
+from models.models import IceCream, Topping, Consumable, Order
+from crud.ice_cream import (
+    create_ice_cream,
+    get_all_ice_creams,
+    get_ice_cream_by_id,
+    update_ice_cream,
+    delete_ice_cream_by_id,
+    delete_all_ice_creams,
+)
+from crud.topping import (
+    create_topping,
+    get_all_toppings,
+    get_topping_by_id,
+    update_topping,
+    delete_topping_by_id,
+    delete_all_toppings,
+)
+from crud.consumable import (
+    create_consumable,
+    get_all_consumables,
+    get_consumable_by_id,
+    update_consumable,
+    delete_consumable_by_id,
+    delete_all_consumables,
+)
+from crud.order import (
+    create_order,
+    get_all_orders,
+    get_order_by_id,
+    update_order,
+    delete_order_by_id,
+    delete_all_orders,
+)
 
 
-def main():
+def test_crud_operations():
     # 초기화
     initialize_tables()
 
     # 데이터베이스 연결
     db = SessionLocal()
 
-    # 예제 데이터 추가
-    vanilla = create_ice_cream(db, "바닐라", 2500)
-    chocolate = create_ice_cream(db, "초콜릿", 2500)
-    strawberry = create_ice_cream(db, "딸기", 2500)
+    # 아이스크림 생성 및 조회 테스트
+    vanilla = create_ice_cream(db, "바닐라", 2500, 100)
+    chocolate = create_ice_cream(db, "초콜릿", 2500, 100)
+    strawberry = create_ice_cream(db, "딸기", 2500, 100)
 
-    oreo = create_topping(db, "오레오", 300)
-    choco_ball = create_topping(db, "초코볼", 300)
-    cereal = create_topping(db, "시리얼", 400)
+    print("특정 아이스크림 조회:", get_ice_cream_by_id(db, vanilla.id))
+    print("전체 아이스크림 조회:", get_all_ice_creams(db))
 
-    cup = create_other_item(db, "컵", 500)
-    spoon = create_other_item(db, "숟가락", 100)
-    holder = create_other_item(db, "홀더", 100)
+    update_ice_cream(db, vanilla.id, price=3200)
+    print("업데이트된 아이스크림 조회:", get_ice_cream_by_id(db, vanilla.id))
 
-    # 예제 재고 추가
-    create_inventory(db, "ice_cream", strawberry.id, 100)
-    create_inventory(db, "ice_cream", vanilla.id, 100)
-    create_inventory(db, "ice_cream", chocolate.id, 80)
+    # 토핑 생성 및 조회 테스트
+    choco_ball = create_topping(db, "초코볼", 500, 100)
+    cereal = create_topping(db, "시리얼", 700, 100)
 
-    create_inventory(db, "topping", oreo.id, 80)
-    create_inventory(db, "topping", choco_ball.id, 150)
-    create_inventory(db, "topping", cereal.id, 120)
+    print("특정 토핑 조회:", get_topping_by_id(db, choco_ball.id))
+    print("전체 토핑 조회:", get_all_toppings(db))
 
-    create_inventory(db, "other_item", cup.id, 200)
-    create_inventory(db, "other_item", spoon.id, 300)
-    create_inventory(db, "other_item", holder.id, 200)
+    update_topping(db, choco_ball.id, price=600)
+    print("업데이트된 토핑 조회:", get_topping_by_id(db, choco_ball.id))
 
-    # 예제 주문 추가 (다중 토핑 포함, 스푼은 선택적)
-    create_order(db, vanilla.id, toppings=[choco_ball.id, cereal.id, oreo.id])
-    create_order(db, strawberry.id, other_items=[holder.id], toppings=[choco_ball.id])
-    create_order(db, chocolate.id, other_items=[spoon.id, holder.id])
-    create_order(db, vanilla.id, toppings=[choco_ball.id, cereal.id])
+    # 소모품 생성 및 조회 테스트
+    cup = create_consumable(db, "컵", 200, 100)
+    spoon = create_consumable(db, "스푼", 100, 100)
+    holder = create_consumable(db, "홀더", 300, 100)
 
-    # 모든 아이스크림 조회
-    ice_creams = get_all_ice_creams(db)
-    print("아이스크림 목록:")
-    for ice_cream in ice_creams:
-        print(f"ID: {ice_cream.id}, 이름: {ice_cream.name}, 가격: {ice_cream.price}")
+    print("특정 소모품 조회:", get_consumable_by_id(db, cup.id))
+    print("전체 소모품 조회:", get_all_consumables(db))
 
-    # 모든 토핑 조회
-    toppings = get_all_toppings(db)
-    print("토핑 목록:")
-    for topping in toppings:
-        print(f"ID: {topping.id}, 이름: {topping.name}, 가격: {topping.price}")
+    update_consumable(db, cup.id, price=250)
+    print("업데이트된 소모품 조회:", get_consumable_by_id(db, cup.id))
 
-    # 모든 기타 품목 조회
-    other_items = get_all_other_items(db)
-    print("기타 품목 목록:")
-    for other_item in other_items:
-        print(f"ID: {other_item.id}, 이름: {other_item.name}, 가격: {other_item.price}")
+    # 주문 생성 및 조회 테스트
+    order1 = create_order(db, vanilla.id, [choco_ball.id, cereal.id], [cup.id])
+    order2 = create_order(db, strawberry.id, [], [spoon.id, holder.id])
 
-    # 모든 재고 조회
-    inventory = get_all_inventory(db)
-    print("재고 목록:")
-    for inv in inventory:
-        print(
-            f"Item Type: {inv.item_type}, Item ID: {inv.item_id}, Quantity: {inv.quantity}"
-        )
+    print("특정 주문 조회:", get_order_by_id(db, order1.id))
+    print("전체 주문 조회:", get_all_orders(db))
 
-    # 모든 주문 조회
-    orders = get_all_orders(db)
-    print("주문 목록:")
-    for order in orders:
-        other_item_ids = json.loads(order.other_item_ids)
-        other_item_names = [
-            db.query(OtherItem).filter(OtherItem.id == item_id).first().name
-            for item_id in other_item_ids
-        ]
-        toppings_ids = json.loads(order.toppings) if order.toppings else []
-        toppings_names = [
-            db.query(Topping).filter(Topping.id == topping_id).first().name
-            for topping_id in toppings_ids
-        ]
-        print(
-            f"ID: {order.id}, Ice Cream ID: {order.ice_cream_id}, Other Items: {other_item_names}, Toppings: {toppings_names}, Order Time: {order.order_time}"
-        )
+    print("특정 아이스크림 조회 (주문 후):", get_ice_cream_by_id(db, vanilla.id))
+    print("특정 토핑 조회 (주문 후):", get_topping_by_id(db, choco_ball.id))
+    print("특정 소모품 조회 (주문 후):", get_consumable_by_id(db, cup.id))
+
+    update_order(
+        db,
+        order1.id,
+        ice_cream_id=strawberry.id,
+        topping_ids=[cereal.id],
+        consumable_ids=[holder.id],
+    )
+    print("업데이트된 주문 조회:", get_order_by_id(db, order1.id))
+
+    print("전체 주문 조회:", get_all_orders(db))
+
+    print("전체 토핑 조회:", get_all_toppings(db))
+
+    print("전체 소모품 조회:", get_all_consumables(db))
+
+    print("전체 아이스크림 조회:", get_all_ice_creams(db))
+
+    # delete_order_by_id(db, order2.id)
+    # delete_all_orders(db)
+    # delete_topping_by_id(db, cereal.id)
+    # delete_all_toppings(db)
+    # delete_consumable_by_id(db, spoon.id)
+    # delete_all_consumables(db)
+    # delete_ice_cream_by_id(db, chocolate.id)
+    # delete_all_ice_creams(db)
 
     # 세션 닫기
     db.close()
 
 
 if __name__ == "__main__":
-    main()
+    test_crud_operations()

@@ -1,0 +1,31 @@
+{% extends "header.html" %}
+
+{% block content %}
+<h2>아이스크림 주문</h2>
+<form action="/order" method="post">
+    <label for="ice_cream">아이스크림 선택:</label>
+    <select name="ice_cream_id" required>
+        {% for ice_cream in ice_creams %}
+        <option value="{{ ice_cream.id }}">{{ ice_cream.name }}</option>
+        {% endfor %}
+    </select>
+    
+    <label for="toppings">토핑 선택:</label>
+    <div>
+        {% for topping in toppings %}
+        <input type="checkbox" name="topping_ids" value="{{ topping.id }}">
+        <label for="topping_{{ topping.id }}">{{ topping.name }}</label><br>
+        {% endfor %}
+    </div>
+
+    <label for="consumables">소모품 선택:</label>
+    <div>
+        {% for consumable in consumables %}
+        <input type="checkbox" name="consumable_ids" value="{{ consumable.id }}">
+        <label for="consumable_{{ consumable.id }}">{{ consumable.name }}</label><br>
+        {% endfor %}
+    </div>
+    
+    <button type="submit">주문하기</button>
+</form>
+{% endblock %}
