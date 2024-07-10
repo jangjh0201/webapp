@@ -55,6 +55,7 @@ strawberry = create_ice_cream(db, "딸기", 2500, 100)
 # 토핑 생성 및 조회 테스트
 choco_ball = create_topping(db, "초코볼", 500, 100)
 cereal = create_topping(db, "시리얼", 700, 100)
+oreo = create_topping(db, "오레오", 700, 100)
 
 # 소모품 생성 및 조회 테스트
 cup = create_consumable(db, "컵", 200, 100)
@@ -68,10 +69,11 @@ def read_home(request: Request):
 
 
 @app.get("/order")
-def read_order_page(request: Request, db: Session = Depends(get_db)):
+def get_order_page(request: Request, db: Session = Depends(get_db)):
     ice_creams = get_all_ice_creams(db)
     toppings = get_all_toppings(db)
     consumables = get_all_consumables(db)
+    consumables = [c for c in consumables if c.name != "컵"]
     return templates.TemplateResponse(
         "order.html",
         {
@@ -87,8 +89,8 @@ def read_order_page(request: Request, db: Session = Depends(get_db)):
 def create_new_order(
     request: Request,
     ice_cream_id: int = Form(...),
-    topping_ids: Optional[str] = Form(None),
-    consumable_ids: Optional[str] = Form(None),
+    topping_ids: str = Form(None),
+    consumable_ids: str = Form(None),
     db: Session = Depends(get_db),
 ):
     topping_ids_list = (
@@ -97,7 +99,6 @@ def create_new_order(
     consumable_ids_list = (
         [int(id) for id in consumable_ids.split(",") if id] if consumable_ids else []
     )
-
     create_order(db, ice_cream_id, topping_ids_list, consumable_ids_list)
     return templates.TemplateResponse("index.html", {"request": request})
 
