@@ -2,17 +2,56 @@ from sqlalchemy.orm import Session
 from models.models import IceCream
 
 
-# 이름을 받아 기타 품목을 생성합니다.
-def create_ice_cream(db: Session, name: str, price: int):
+def create_ice_cream(db: Session, name: str, price: int, quantity: int):
+    ice_cream = IceCream(name=name, price=price, quantity=quantity)
+    db.add(ice_cream)
+    db.commit()
+    db.refresh(ice_cream)
+    return ice_cream
 
-# 이름으로 특정 기타 품목을 조회합니다.
-def read_ice_cream_by_name():
 
-# 모든 기타 품목들을 조회합니다.
-def read_all_ice_creams(db: Session):
+def get_ice_cream_by_id(db: Session, ice_cream_id: float):
+    return db.query(IceCream).filter(IceCream.id == ice_cream_id).first()
 
-# 이름으로 특정 기타 품목을 삭제합니다.
-def delete_ice_cream_by_name(db: Session, name: str):
 
-# 모든 기타 품목을 삭제합니다.
+def get_all_ice_creams(db: Session):
+    return db.query(IceCream).all()
+
+
+def update_ice_cream(
+    db: Session,
+    ice_cream_id: float,
+    name: str = None,
+    price: int = None,
+    quantity: int = None,
+):
+    ice_cream = db.query(IceCream).filter(IceCream.id == ice_cream_id).first()
+    if ice_cream is None:
+        return None
+
+    if name is not None:
+        ice_cream.name = name
+    if price is not None:
+        ice_cream.price = price
+    if quantity is not None:
+        ice_cream.quantity = quantity
+
+    db.commit()
+    db.refresh(ice_cream)
+    return ice_cream
+
+
+def delete_ice_cream_by_id(db: Session, ice_cream_id: float):
+    ice_cream = db.query(IceCream).filter(IceCream.id == ice_cream_id).first()
+    if ice_cream:
+        db.delete(ice_cream)
+        db.commit()
+    return ice_cream
+
+
 def delete_all_ice_creams(db: Session):
+    ice_creams = db.query(IceCream).all()
+    for ice_cream in ice_creams:
+        db.delete(ice_cream)
+    db.commit()
+    return ice_creams

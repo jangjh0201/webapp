@@ -2,32 +2,56 @@ from sqlalchemy.orm import Session
 from models.models import Topping
 
 
-def create_topping(db: Session, name: str, price: int):
-    if db.query(Topping).filter(Topping.name == name).first():
-        print(f"{name}은(는) 이미 등록된 품목입니다.")
-        return None
-    db_topping = Topping(name=name, price=price)
-    db.add(db_topping)
+def create_topping(db: Session, name: str, price: int, quantity: int):
+    topping = Topping(name=name, price=price, quantity=quantity)
+    db.add(topping)
     db.commit()
-    db.refresh(db_topping)
-    return db_topping
+    db.refresh(topping)
+    return topping
+
+
+def get_topping_by_id(db: Session, topping_id: float):
+    return db.query(Topping).filter(Topping.id == topping_id).first()
 
 
 def get_all_toppings(db: Session):
     return db.query(Topping).all()
 
 
-def delete_topping_by_name(db: Session, name: str):
-    db_topping = db.query(Topping).filter(Topping.name == name).first()
-    if db_topping:
-        db.delete(db_topping)
+def update_topping(
+    db: Session,
+    topping_id: float,
+    name: str = None,
+    price: int = None,
+    quantity: int = None,
+):
+    topping = db.query(Topping).filter(Topping.id == topping_id).first()
+    if topping is None:
+        return None
+
+    if name is not None:
+        topping.name = name
+    if price is not None:
+        topping.price = price
+    if quantity is not None:
+        topping.quantity = quantity
+
+    db.commit()
+    db.refresh(topping)
+    return topping
+
+
+def delete_topping_by_id(db: Session, topping_id: float):
+    topping = db.query(Topping).filter(Topping.id == topping_id).first()
+    if topping:
+        db.delete(topping)
         db.commit()
-        print(f"{name} 토핑을 삭제했습니다.")
-    else:
-        print(f"{name} 토핑이 존재하지 않습니다.")
+    return topping
 
 
 def delete_all_toppings(db: Session):
-    db.query(Topping).delete()
+    toppings = db.query(Topping).all()
+    for topping in toppings:
+        db.delete(topping)
     db.commit()
-    print("모든 토핑을 삭제했습니다.")
+    return toppings

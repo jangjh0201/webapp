@@ -1,53 +1,147 @@
 from sqlalchemy.orm import Session
-from models import Order, IceCream, Topping, OtherItem, Inventory
+from models.models import Order, IceCream, Topping, Consumable
 
 
-# ice_cream, topping, other_item의 이름들을 받아 객체들을 조회하여 주문을 생성합니다.
 def create_order(
-    db: Session, ice_cream_name: str, topping_names: list, other_item_names: list
+    db: Session, ice_cream_id: int, topping_ids: list, consumable_ids: list
 ):
-    ice_cream = db.query(IceCream).filter(IceCream.name == ice_cream_name).first()
-    if not ice_cream:
-        return None
+    order = Order(ice_cream_id=ice_cream_id)
+    db.add(order)
+    db.commit()
+    db.refresh(order)
 
-    toppings = []
-    for name in topping_names:
-        topping = db.query(Topping).filter(Topping.name == name).first()
+    ice_cream = db.query(IceCream).filter(IceCream.id == ice_cream_id).first()
+    if ice_cream:
+        ice_cream.quantity -= 1
+        db.commit()
+
+    for topping_id in topping_ids:
+        topping = db.query(Topping).filter(Topping.id == topping_id).first()
         if topping:
-            toppings.append(topping.id)
+            topping.quantity -= 1
+            order.toppings.append(topping)
+            db.commit()
 
-    other_items = []
-    for name in other_item_names:
-        other_item = db.query(OtherItem).filter(OtherItem.name == name).first()
-        if other_item:
-            other_items.append(other_item.id)
+    for consumable_id in consumable_ids:
+        consumable = db.query(Consumable).filter(Consumable.id == consumable_id).first()
+        if consumable:
+            consumable.quantity -= 1
+            order.consumables.append(consumable)
+            db.commit()
 
-    return create_order(db, ice_cream.id, toppings, other_items)
-
-
-# ID로 특정 주문을 조회합니다.
-def read_order_by_id(db: Session, order_id: int):
-    return db.query(Order).filter(Order.id == order_id).first()
+    db.commit()
+    return order
 
 
-# 모든 주문을 조회합니다.
-def read_all_orders(db: Session):
+def get_all_orders(db: Session):
     return db.query(Order).all()
 
 
-# ID로 특정 주문을 삭제합니다.
-def delete_order_by_id(db: Session, order_id: int):
+def get_order_by_id(db: Session, order_id: int):
+    return db.query(Order).filter(Order.id == order_id).first()
+
+
+def update_order(
+    db: Session,
+    order_id: int,
+    ice_cream_id: int,
+    topping_ids: list,
+    consumable_ids: list,
+):
     order = db.query(Order).filter(Order.id == order_id).first()
     if order:
-        db.delete(order)
+        # 기존 주문의 재고 복구
+        old_ice_cream = (
+            db.query(IceCream).filter(IceCream.id == order.ice_cream_id).first()
+        )
+        if old_ice_cream:
+            old_ice_cream.quantity += 1
+
+        for topping in order.toppings:
+            old_topping = db.query(Topping).filter(Topping.id == topping.id).first()
+            if old_topping:
+                old_topping.quantity += 1
+
+        for consumable in order.consumables:
+            old_consumable = (
+                db.query(Consumable).filter(Consumable.id == consumable.id).first()
+            )
+            if old_consumable:
+                old_consumable.quantity += 1
+
+        # 새로운 주문의 재고 차감
+        order.ice_cream_id = ice_cream_id
+        new_ice_cream = db.query(IceCream).filter(IceCream.id == ice_cream_id).first()
+        if new_ice_cream:
+            new_ice_cream.quantity -= 1
+
+        order.toppings = []
+        for topping_id in topping_ids:
+            new_topping = db.query(Topping).filter(Topping.id == topping_id).first()
+            if new_topping:
+                new_topping.quantity -= 1
+                order.toppings.append(new_topping)
+
+        order.consumables = []
+        for consumable_id in consumable_ids:
+            new_consumable = (
+                db.query(Consumable).filter(Consumable.id == consumable_id).first()
+            )
+            if new_consumable:
+                new_consumable.quantity -= 1
+                order.consumables.append(new_consumable)
+
         db.commit()
     return order
 
 
-# 모든 주문을 삭제합니다.
+def delete_order_by_id(db: Session, order_id: int):
+    order = db.query(Order).filter(Order.id == order_id).first()
+    if order:
+        # 기존 주문의 재고 복구
+        old_ice_cream = (
+            db.query(IceCream).filter(IceCream.id == order.ice_cream_id).first()
+        )
+        if old_ice_cream:
+            old_ice_cream.quantity += 1
+
+        for topping in order.toppings:
+            old_topping = db.query(Topping).filter(Topping.id == topping.id).first()
+            if old_topping:
+                old_topping.quantity += 1
+
+        for consumable in order.consumables:
+            old_consumable = (
+                db.query(Consumable).filter(Consumable.id == consumable.id).first()
+            )
+            if old_consumable:
+                old_consumable.quantity += 1
+
+        db.delete(order)
+        db.commit()
+
+
 def delete_all_orders(db: Session):
     orders = db.query(Order).all()
     for order in orders:
-        db.delete(order)
+        # 기존 주문의 재고 복구
+        old_ice_cream = (
+            db.query(IceCream).filter(IceCream.id == order.ice_cream_id).first()
+        )
+        if old_ice_cream:
+            old_ice_cream.quantity += 1
+
+        for topping in order.toppings:
+            old_topping = db.query(Topping).filter(Topping.id == topping.id).first()
+            if old_topping:
+                old_topping.quantity += 1
+
+        for consumable in order.consumables:
+            old_consumable = (
+                db.query(Consumable).filter(Consumable.id == consumable.id).first()
+            )
+            if old_consumable:
+                old_consumable.quantity += 1
+
+    db.query(Order).delete()
     db.commit()
-    return orders
