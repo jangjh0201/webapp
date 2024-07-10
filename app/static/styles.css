@@ -106,3 +106,36 @@ li.long-text {
 h2 {
     margin-top: 2rem;
 }
+
+.selection-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px; /* 각 섹션 사이의 간격 추가 */
+}
+
+.selection-section {
+    margin-bottom: 20px; /* 각 섹션 사이의 간격 추가 */
+}
+
+.selectable-box {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    flex: 1 0 30%; /* 박스의 크기를 고정하지 않고 유연하게 조절 */
+    text-align: center;
+}
+
+.selectable-box.selected {
+    background-color: #444;
+    color: #fff;
+}
+
+.selectable-box.disabled {
+    background-color: #ccc;
+    color: #777;
+    pointer-events: none;
+}
+

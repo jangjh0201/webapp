@@ -2,30 +2,106 @@
 
 {% block content %}
 <h2>아이스크림 주문</h2>
-<form action="/order" method="post">
-    <label for="ice_cream">아이스크림 선택:</label>
-    <select name="ice_cream_id" required>
-        {% for ice_cream in ice_creams %}
-        <option value="{{ ice_cream.id }}">{{ ice_cream.name }}</option>
-        {% endfor %}
-    </select>
-    
-    <label for="toppings">토핑 선택:</label>
-    <div>
-        {% for topping in toppings %}
-        <input type="checkbox" name="topping_ids" value="{{ topping.id }}">
-        <label for="topping_{{ topping.id }}">{{ topping.name }}</label><br>
-        {% endfor %}
+<div class="inventory-container">
+    <div class="category">
+        <h3>아이스크림 선택</h3>
+        <div class="selectable-box ice-cream-box" data-type="ice_cream" data-id="1">바닐라</div>
+        <div class="selectable-box ice-cream-box" data-type="ice_cream" data-id="2">초콜릿</div>
+        <div class="selectable-box ice-cream-box" data-type="ice_cream" data-id="3">딸기</div>
     </div>
 
-    <label for="consumables">소모품 선택:</label>
-    <div>
-        {% for consumable in consumables %}
-        <input type="checkbox" name="consumable_ids" value="{{ consumable.id }}">
-        <label for="consumable_{{ consumable.id }}">{{ consumable.name }}</label><br>
-        {% endfor %}
+    <div class="category">
+        <h3>토핑 선택</h3>
+        <div class="selectable-box topping-box" data-type="topping" data-id="1">초코볼</div>
+        <div class="selectable-box topping-box" data-type="topping" data-id="2">시리얼</div>
     </div>
-    
-    <button type="submit">주문하기</button>
-</form>
+
+    <div class="category">
+        <h3>소모품 선택</h3>
+        <div class="selectable-box consumable-box" data-type="consumable" data-id="2">스푼</div>
+        <div class="selectable-box consumable-box" data-type="consumable" data-id="3">홀더</div>
+    </div>
+
+    <div class="category">
+        <h3>주문</h3>
+        <button id="submit-order">주문하기</button>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const selectedIceCream = [];
+    const selectedToppings = [];
+    const selectedConsumables = [];
+
+    document.querySelectorAll('.selectable-box').forEach(box => {
+        box.addEventListener('click', function() {
+            const type = this.getAttribute('data-type');
+            const id = parseInt(this.getAttribute('data-id'));
+
+            if (type === 'ice_cream') {
+                if (selectedIceCream.includes(id)) {
+                    selectedIceCream.splice(selectedIceCream.indexOf(id), 1);
+                    this.style.backgroundColor = '#fff';
+                    this.style.color = '#000';
+                    document.querySelectorAll('.ice-cream-box').forEach(iceCreamBox => {
+                        iceCreamBox.style.pointerEvents = 'auto';
+                        iceCreamBox.style.backgroundColor = '#fff';
+                        iceCreamBox.style.color = '#000';
+                    });
+                } else {
+                    selectedIceCream.push(id);
+                    this.style.backgroundColor = '#444';
+                    this.style.color = '#fff';
+                    document.querySelectorAll('.ice-cream-box').forEach(iceCreamBox => {
+                        if (iceCreamBox !== this) {
+                            iceCreamBox.style.pointerEvents = 'none';
+                            iceCreamBox.style.backgroundColor = '#ccc';
+                        }
+                    });
+                }
+            } else if (type === 'topping') {
+                if (selectedToppings.includes(id)) {
+                    selectedToppings.splice(selectedToppings.indexOf(id), 1);
+                    this.style.backgroundColor = '#fff';
+                    this.style.color = '#000';
+                } else {
+                    selectedToppings.push(id);
+                    this.style.backgroundColor = '#444';
+                    this.style.color = '#fff';
+                }
+            } else if (type === 'consumable') {
+                if (selectedConsumables.includes(id)) {
+                    selectedConsumables.splice(selectedConsumables.indexOf(id), 1);
+                    this.style.backgroundColor = '#fff';
+                    this.style.color = '#000';
+                } else {
+                    selectedConsumables.push(id);
+                    this.style.backgroundColor = '#444';
+                    this.style.color = '#fff';
+                }
+            }
+        });
+    });
+
+    document.getElementById('submit-order').addEventListener('click', () => {
+        const formData = new FormData();
+        formData.append('ice_cream_id', selectedIceCream[0] || '');
+        formData.append('topping_ids', selectedToppings.join(','));
+        formData.append('consumable_ids', selectedConsumables.join(','));
+        
+        fetch('/order', {
+            method: 'POST',
+            body: formData
+        }).then(response => {
+            if (response.ok) {
+                alert('주문이 성공적으로 완료되었습니다.');
+                location.reload();
+            } else {
+                alert('주문 중 오류가 발생했습니다.');
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

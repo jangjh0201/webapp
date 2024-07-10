@@ -1,9 +1,12 @@
 import sys
 import os
+from typing import Optional
+
 
 # 프로젝트 루트 디렉토리를 sys.path에 추가
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+from models.models import Consumable
 from database.database import initialize_tables, SessionLocal
 from crud.ice_cream import (
     create_ice_cream,
@@ -84,11 +87,18 @@ def read_order_page(request: Request, db: Session = Depends(get_db)):
 def create_new_order(
     request: Request,
     ice_cream_id: int = Form(...),
-    topping_ids: list[int] = Form(...),
-    consumable_ids: list[int] = Form(...),
+    topping_ids: Optional[str] = Form(None),
+    consumable_ids: Optional[str] = Form(None),
     db: Session = Depends(get_db),
 ):
-    create_order(db, ice_cream_id, topping_ids, consumable_ids)
+    topping_ids_list = (
+        [int(id) for id in topping_ids.split(",") if id] if topping_ids else []
+    )
+    consumable_ids_list = (
+        [int(id) for id in consumable_ids.split(",") if id] if consumable_ids else []
+    )
+
+    create_order(db, ice_cream_id, topping_ids_list, consumable_ids_list)
     return templates.TemplateResponse("index.html", {"request": request})
 
 
