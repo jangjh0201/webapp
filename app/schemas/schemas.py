@@ -5,6 +5,7 @@ from typing import List, Optional
 class IceCreamBase(BaseModel):
     name: str
     price: int
+    quantity: int
 
 
 class IceCreamCreate(IceCreamBase):
@@ -15,12 +16,13 @@ class IceCream(IceCreamBase):
     id: int
 
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 
 class ToppingBase(BaseModel):
     name: str
     price: int
+    quantity: int
 
 
 class ToppingCreate(ToppingBase):
@@ -31,29 +33,30 @@ class Topping(ToppingBase):
     id: int
 
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 
-class OtherItemBase(BaseModel):
+class ConsumableBase(BaseModel):
     name: str
     price: int
+    quantity: int
 
 
-class OtherItemCreate(OtherItemBase):
+class ConsumableCreate(ConsumableBase):
     pass
 
 
-class OtherItem(OtherItemBase):
+class Consumable(ConsumableBase):
     id: int
 
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 
 class OrderBase(BaseModel):
     ice_cream_id: int
-    other_item_ids: List[int]
     toppings: Optional[List[int]] = None
+    consumables: Optional[List[int]] = None
 
 
 class OrderCreate(OrderBase):
@@ -64,21 +67,4 @@ class Order(OrderBase):
     id: int
 
     class Config:
-        from_attributes = True
-
-
-class InventoryBase(BaseModel):
-    item_type: str
-    item_id: int
-    quantity: int
-
-
-class InventoryCreate(InventoryBase):
-    pass
-
-
-class Inventory(InventoryBase):
-    id: int
-
-    class Config:
-        from_attributes = True
+        orm_mode = True
