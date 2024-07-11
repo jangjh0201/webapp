@@ -156,7 +156,7 @@ button:hover {
     }
 }
 
-/* 주문 내역 테이블 스타일 */
+/* 내역 테이블 스타일 */
 .table-container {
     width: 70%; /* 테이블 컨테이너의 가로 길이를 70%로 설정 */
     display: flex;
