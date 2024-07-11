@@ -6,11 +6,23 @@ from typing import Optional
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from models.models import Consumable
-from database.database import initialize_tables, SessionLocal
-from crud.ice_cream import create_ice_cream, get_all_ice_creams
-from crud.topping import create_topping, get_all_toppings
-from crud.consumable import create_consumable, get_all_consumables
-from crud.order import create_order, get_all_orders
+from database.database import initialize_tables, configure_database, SessionLocal
+from crud.ice_cream import (
+    create_ice_cream,
+    get_all_ice_creams,
+)
+from crud.topping import (
+    create_topping,
+    get_all_toppings,
+)
+from crud.consumable import (
+    create_consumable,
+    get_all_consumables,
+)
+from crud.order import (
+    create_order,
+    get_all_orders,
+)
 from fastapi import FastAPI, Request, Form, Depends
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -30,27 +42,26 @@ def get_db():
         db.close()
 
 
+# 테이블 및 데이터베이스 설정
 initialize_tables()
+configure_database()
 
 db = SessionLocal()
 
 # 아이스크림 생성 및 조회 테스트
-if not get_all_ice_creams(db):
-    create_ice_cream(db, "바닐라", 2500, 100)
-    create_ice_cream(db, "초콜릿", 2500, 100)
-    create_ice_cream(db, "딸기", 2500, 100)
+vanilla = create_ice_cream(db, "바닐라", 2500, 100)
+chocolate = create_ice_cream(db, "초콜릿", 2500, 100)
+strawberry = create_ice_cream(db, "딸기", 2500, 100)
 
 # 토핑 생성 및 조회 테스트
-if not get_all_toppings(db):
-    create_topping(db, "초코볼", 500, 100)
-    create_topping(db, "시리얼", 700, 100)
-    create_topping(db, "오레오", 700, 100)
+choco_ball = create_topping(db, "초코볼", 500, 100)
+cereal = create_topping(db, "시리얼", 700, 100)
+oreo = create_topping(db, "오레오", 700, 100)
 
 # 소모품 생성 및 조회 테스트
-if not get_all_consumables(db):
-    create_consumable(db, "컵", 200, 100)
-    create_consumable(db, "스푼", 100, 100)
-    create_consumable(db, "홀더", 300, 100)
+cup = create_consumable(db, "컵", 200, 100)
+spoon = create_consumable(db, "스푼", 100, 100)
+holder = create_consumable(db, "홀더", 300, 100)
 
 
 @app.get("/")

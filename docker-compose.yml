@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: mysql+pymysql://root:system@db:3306/ice_cream_db
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: ice_cream_db
+      MYSQL_ROOT_PASSWORD: system
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+
+volumes:
+  db_data:
