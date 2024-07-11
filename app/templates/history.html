@@ -2,11 +2,36 @@
 
 {% block content %}
 <h2>주문 내역</h2>
-<ul>
-    {% for order in orders %}
-    <li>
-        ID: {{ order.id }} - 아이스크림: {{ order.ice_cream.name }} - 토핑: {% for topping in order.toppings %}{{ topping.name }} {% endfor %} - 소모품: {% for consumable in order.consumables %}{{ consumable.name }} {% endfor %} - 시간: {{ order.order_time }}
-    </li>
-    {% endfor %}
-</ul>
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>아이스크림</th>
+                <th>토핑</th>
+                <th>소모품</th>
+                <th>시간</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.ice_cream.name }}</td>
+                <td>
+                    {% for topping in order.toppings %}
+                        {{ topping.name }}{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for consumable in order.consumables %}
+                        {{ consumable.name }}{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{ order.order_time }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

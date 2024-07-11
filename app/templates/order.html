@@ -1,31 +1,30 @@
 {% extends "header.html" %}
 
 {% block content %}
-<h2>아이스크림 주문</h2>
-<div class="inventory-container">
-    <div class="category">
+<h2>주문</h2>
+<div class="order-container">
+    <div class="order-category">
         <h3>아이스크림 선택</h3>
         {% for ice_cream in ice_creams %}
         <div class="selectable-box ice-cream-box" data-type="ice_cream" data-id="{{ ice_cream.id }}">{{ ice_cream.name }}</div>
         {% endfor %}
     </div>
 
-    <div class="category">
+    <div class="order-category">
         <h3>토핑 선택</h3>
         {% for topping in toppings %}
         <div class="selectable-box topping-box" data-type="topping" data-id="{{ topping.id }}">{{ topping.name }}</div>
         {% endfor %}
     </div>
 
-    <div class="category">
+    <div class="order-category">
         <h3>소모품 선택</h3>
         {% for consumable in consumables %}
         <div class="selectable-box consumable-box" data-type="consumable" data-id="{{ consumable.id }}">{{ consumable.name }}</div>
         {% endfor %}
     </div>
 
-    <div class="category">
-        <h3>주문</h3>
+    <div class="order-category">
         <button id="submit-order">주문하기</button>
     </div>
 </div>

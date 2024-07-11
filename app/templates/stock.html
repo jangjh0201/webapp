@@ -2,24 +2,32 @@
 
 {% block content %}
 <h2>재고</h2>
-<h3>아이스크림</h3>
-<ul>
-    {% for name, quantity in inventory_data['ice_cream'].items() %}
-    <li>{{ name }}: {{ quantity }}개</li>
-    {% endfor %}
-</ul>
+<div class="inventory-container">
+    <div class="inventory-category">
+        <h3>아이스크림</h3>
+        <ul class="inventory-list">
+            {% for name, quantity in inventory_data['ice_cream'].items() %}
+            <li>{{ name }}: {{ quantity }}개</li>
+            {% endfor %}
+        </ul>
+    </div>
 
-<h3>토핑</h3>
-<ul>
-    {% for name, quantity in inventory_data['topping'].items() %}
-    <li>{{ name }}: {{ quantity }}개</li>
-    {% endfor %}
-</ul>
+    <div class="inventory-category">
+        <h3>토핑</h3>
+        <ul class="inventory-list">
+            {% for name, quantity in inventory_data['topping'].items() %}
+            <li>{{ name }}: {{ quantity }}개</li>
+            {% endfor %}
+        </ul>
+    </div>
 
-<h3>소모품</h3>
-<ul>
-    {% for name, quantity in inventory_data['consumable'].items() %}
-    <li>{{ name }}: {{ quantity }}개</li>
-    {% endfor %}
-</ul>
+    <div class="inventory-category">
+        <h3>소모품</h3>
+        <ul class="inventory-list">
+            {% for name, quantity in inventory_data['consumable'].items() %}
+            <li>{{ name }}: {{ quantity }}개</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
 {% endblock %}

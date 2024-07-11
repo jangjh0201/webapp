@@ -69,52 +69,32 @@ input[type="text"], input[type="number"] {
 }
 
 button {
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 1rem; /* 세로 길이는 그대로 유지 */
     border: none;
     background-color: #333;
     color: white;
     cursor: pointer;
     border-radius: 0.25rem;
+    font-size: 1.25rem; /* 폰트 크기도 증가 */
 }
 
 button:hover {
     background-color: #555;
 }
 
-ul {
-    list-style-type: none;
-    padding: 0;
-    width: 100%;
+/* 주문 페이지 스타일 */
+.order-container {
+    width: 50%; /* 부모 컨테이너의 가로 길이를 50%로 설정 */
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-li {
-    background-color: white;
-    border: 1px solid #ccc;
-    margin-bottom: 0.5rem;
-    padding: 0.5rem;
-    border-radius: 0.25rem;
-    width: 50%; /* 반응형으로 조정 */
-}
-
-li.long-text {
-    width: auto; /* 긴 텍스트일 경우 자동 조정 */
-}
-
-h2 {
-    margin-top: 2rem;
-}
-
-.selection-container {
+.order-category {
+    width: 100%;
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px; /* 각 섹션 사이의 간격 추가 */
-}
-
-.selection-section {
+    flex-direction: column;
+    align-items: center;
     margin-bottom: 20px; /* 각 섹션 사이의 간격 추가 */
 }
 
@@ -124,8 +104,10 @@ h2 {
     margin: 5px;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
-    flex: 1 0 30%; /* 박스의 크기를 고정하지 않고 유연하게 조절 */
+    width: 100%; /* 가로 길이를 부모 컨테이너의 100%로 설정 */
     text-align: center;
+    font-size: 1.25rem; /* 폰트 크기도 증가 */
+    border-radius: 10px; /* 모서리를 둥글게 설정 */
 }
 
 .selectable-box.selected {
@@ -139,3 +121,61 @@ h2 {
     pointer-events: none;
 }
 
+/* 재고 페이지 스타일 */
+.inventory-container {
+    width: 100%; /* 부모 컨테이너의 가로 길이를 100%로 설정 */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem; /* 박스 사이의 간격 추가 */
+}
+
+.inventory-category {
+    width: 30%; /* 각 카테고리의 가로 길이를 30%로 설정 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px; /* 각 섹션 사이의 간격 추가 */
+    border: 1px solid #ccc;
+    border-radius: 10px; /* 모서리를 둥글게 설정 */
+    padding: 10px; /* 내부 여백 추가 */
+}
+
+.inventory-list {
+    list-style-type: none;
+    padding: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+@media screen and (max-width: 1000px) {
+    .inventory-category {
+        width: 100%; /* 화면이 1000px 이하일 때, 카테고리의 가로 길이를 100%로 설정 */
+    }
+}
+
+/* 주문 내역 테이블 스타일 */
+.table-container {
+    width: 70%; /* 테이블 컨테이너의 가로 길이를 70%로 설정 */
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    text-align: center;
+}
+
+th {
+    background-color: #333;
+    color: white;
+}
