@@ -1,10 +1,15 @@
 import sys
 import os
 from typing import Optional
+from fastapi import FastAPI, Request, Form, Depends, HTTPException
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+from sqlalchemy.orm import Session
 
 # 프로젝트 루트 디렉토리를 sys.path에 추가
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+from models.models import Consumable, IceCream, Topping
 from database.database import initialize_tables, SessionLocal
 from crud.ice_cream import (
     create_ice_cream,
@@ -46,25 +51,56 @@ initialize_tables()
 
 db = SessionLocal()
 
-# 아이스크림 생성 및 조회 테스트
-vanilla = create_ice_cream(db, "바닐라", 2500, 100)
-chocolate = create_ice_cream(db, "초콜릿", 2500, 100)
-strawberry = create_ice_cream(db, "딸기", 2500, 100)
-
-# 토핑 생성 및 조회 테스트
-choco_ball = create_topping(db, "초코볼", 500, 100)
-cereal = create_topping(db, "시리얼", 700, 100)
-oreo = create_topping(db, "오레오", 700, 100)
-
-# 소모품 생성 및 조회 테스트
-cup = create_consumable(db, "컵", 200, 100)
-spoon = create_consumable(db, "스푼", 100, 100)
-holder = create_consumable(db, "홀더", 300, 100)
-
 
 @app.get("/")
 def read_home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
+
+@app.get("/item")
+def get_add_item_page(request: Request, db: Session = Depends(get_db)):
+    ice_creams = get_all_ice_creams(db)
+    toppings = get_all_toppings(db)
+    consumables = get_all_consumables(db)
+    return templates.TemplateResponse(
+        "item.html",
+        {
+            "request": request,
+            "ice_creams": ice_creams,
+            "toppings": toppings,
+            "consumables": consumables,
+        },
+    )
+
+
+@app.post("/item")
+def create_new_item(
+    request: Request,
+    item_type: str = Form(...),
+    item_name: str = Form(...),
+    item_price: int = Form(...),
+    item_quantity: int = Form(...),
+    db: Session = Depends(get_db),
+):
+    if item_type == "ice_cream":
+        create_ice_cream(db, item_name, item_price, item_quantity)
+    elif item_type == "topping":
+        create_topping(db, item_name, item_price, item_quantity)
+    elif item_type == "consumable":
+        create_consumable(db, item_name, item_price, item_quantity)
+    return get_add_item_page(request, db)
+
+
+@app.delete("/item/{item_type}/{item_id}")
+def delete_item(item_type: str, item_id: int, db: Session = Depends(get_db)):
+    if item_type == "ice_cream":
+        db.query(IceCream).filter(IceCream.id == item_id).delete()
+    elif item_type == "topping":
+        db.query(Topping).filter(Topping.id == item_id).delete()
+    elif item_type == "consumable":
+        db.query(Consumable).filter(Consumable.id == item_id).delete()
+    db.commit()
+    return {"success": True}
 
 
 @app.get("/order")
