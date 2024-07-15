@@ -34,7 +34,9 @@
         <h3>아이스크림</h3>
         <ul class="inventory-list">
             {% for ice_cream in ice_creams %}
-            <li>{{ ice_cream.name }}: {{ ice_cream.quantity }}개 - {{ ice_cream.price }}원</li>
+            <li>{{ ice_cream.name }}: {{ ice_cream.quantity }}개 - {{ ice_cream.price }}원
+                <button class="delete-button" data-type="ice_cream" data-id="{{ ice_cream.id }}">삭제</button>
+            </li>
             {% endfor %}
         </ul>
     </div>
@@ -43,7 +45,9 @@
         <h3>토핑</h3>
         <ul class="inventory-list">
             {% for topping in toppings %}
-            <li>{{ topping.name }}: {{ topping.quantity }}개 - {{ topping.price }}원</li>
+            <li>{{ topping.name }}: {{ topping.quantity }}개 - {{ topping.price }}원
+                <button class="delete-button" data-type="topping" data-id="{{ topping.id }}">삭제</button>
+            </li>
             {% endfor %}
         </ul>
     </div>
@@ -52,7 +56,9 @@
         <h3>소모품</h3>
         <ul class="inventory-list">
             {% for consumable in consumables %}
-            <li>{{ consumable.name }}: {{ consumable.quantity }}개 - {{ consumable.price }}원</li>
+            <li>{{ consumable.name }}: {{ consumable.quantity }}개 - {{ consumable.price }}원
+                <button class="delete-button" data-type="consumable" data-id="{{ consumable.id }}">삭제</button>
+            </li>
             {% endfor %}
         </ul>
     </div>
@@ -76,6 +82,26 @@
         }).catch(error => {
             console.error('Error:', error);
             alert('데이터 추가 중 오류가 발생했습니다.');
+        });
+    });
+
+    document.querySelectorAll('.delete-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const itemType = this.getAttribute('data-type');
+            const itemId = this.getAttribute('data-id');
+
+            fetch(`/item/${itemType}/${itemId}`, {
+                method: 'DELETE'
+            }).then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert('데이터 삭제에 실패했습니다.');
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+                alert('데이터 삭제 중 오류가 발생했습니다.');
+            });
         });
     });
 </script>
