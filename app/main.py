@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 # 프로젝트 루트 디렉토리를 sys.path에 추가
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+from utils.utils import get_item_id_by_name
 from models.models import Consumable, IceCream, Topping
 from database.database import initialize_tables, SessionLocal
 from crud.ice_cream import (
@@ -27,10 +28,6 @@ from crud.order import (
     create_order,
     get_all_orders,
 )
-from fastapi import FastAPI, Request, Form, Depends
-from fastapi.templating import Jinja2Templates
-from fastapi.staticfiles import StaticFiles
-from sqlalchemy.orm import Session
 
 app = FastAPI()
 
@@ -48,8 +45,6 @@ def get_db():
 
 # 테이블 및 데이터베이스 설정
 initialize_tables()
-
-db = SessionLocal()
 
 
 @app.get("/")
@@ -123,17 +118,30 @@ def get_order_page(request: Request, db: Session = Depends(get_db)):
 @app.post("/order")
 def create_new_order(
     request: Request,
-    ice_cream_id: int = Form(...),
-    topping_ids: str = Form(None),
-    consumable_ids: str = Form(None),
+    ice_cream_name: str = Form(...),
+    topping_names: Optional[str] = Form(None),  # 콤마로 구분된 토핑 이름 목록
+    consumable_names: Optional[str] = Form(None),  # 콤마로 구분된 소모품 이름 목록
     db: Session = Depends(get_db),
 ):
-    topping_ids_list = (
-        [int(id) for id in topping_ids.split(",") if id] if topping_ids else []
-    )
-    consumable_ids_list = (
-        [int(id) for id in consumable_ids.split(",") if id] if consumable_ids else []
-    )
+    # 아이템 이름을 ID로 변환
+    ice_cream_id = get_item_id_by_name(db, "ice_cream", ice_cream_name)
+    if ice_cream_id is None:
+        raise HTTPException(status_code=400, detail="Invalid ice cream name")
+
+    topping_ids_list = []
+    if topping_names:
+        for name in topping_names.split(","):
+            topping_id = get_item_id_by_name(db, "topping", name.strip())
+            if topping_id:
+                topping_ids_list.append(topping_id)
+
+    consumable_ids_list = []
+    if consumable_names:
+        for name in consumable_names.split(","):
+            consumable_id = get_item_id_by_name(db, "consumable", name.strip())
+            if consumable_id:
+                consumable_ids_list.append(consumable_id)
+
     create_order(db, ice_cream_id, topping_ids_list, consumable_ids_list)
     return templates.TemplateResponse("index.html", {"request": request})
 
