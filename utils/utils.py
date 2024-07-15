@@ -1,6 +1,5 @@
 from typing import Optional
 from models.models import IceCream, Topping, Consumable
-
 from sqlalchemy.orm import Session
 
 

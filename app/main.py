@@ -12,10 +12,22 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from utils.utils import get_item_id_by_name
 from models.models import Consumable, IceCream, Topping
 from database.database import initialize_tables, SessionLocal
-from crud.ice_cream import create_ice_cream, get_all_ice_creams
-from crud.topping import create_topping, get_all_toppings
-from crud.consumable import create_consumable, get_all_consumables
-from crud.order import create_order, get_all_orders
+from crud.ice_cream import (
+    create_ice_cream,
+    get_all_ice_creams,
+)
+from crud.topping import (
+    create_topping,
+    get_all_toppings,
+)
+from crud.consumable import (
+    create_consumable,
+    get_all_consumables,
+)
+from crud.order import (
+    create_order,
+    get_all_orders,
+)
 
 app = FastAPI()
 
