@@ -10,11 +10,11 @@ def create_consumable(db: Session, name: str, price: int, quantity: int):
     return consumable
 
 
-def get_consumable_by_id(db: Session, consumable_id: float):
+def read_consumable_by_id(db: Session, consumable_id: float):
     return db.query(Consumable).filter(Consumable.id == consumable_id).first()
 
 
-def get_all_consumables(db: Session):
+def read_all_consumables(db: Session):
     return db.query(Consumable).all()
 
 

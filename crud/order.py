@@ -28,7 +28,7 @@ def create_order(
         order.consumables.append(consumable)
 
     # 컵 재고 차감
-    cup = db.query(Consumable).filter(Consumable.name == "컵").first()
+    cup = db.query(Consumable).filter(Consumable.name == "cup").first()
     if cup.quantity <= 0:
         raise HTTPException(status_code=400, detail="컵 재고가 부족합니다.")
     cup.quantity -= 1
@@ -39,11 +39,11 @@ def create_order(
     return order
 
 
-def get_all_orders(db: Session):
+def read_all_orders(db: Session):
     return db.query(Order).all()
 
 
-def get_order_by_id(db: Session, order_id: int):
+def read_order_by_id(db: Session, order_id: int):
     return db.query(Order).filter(Order.id == order_id).first()
 
 
@@ -69,7 +69,6 @@ def update_order(
             order.consumables.append(consumable)
         db.commit()
         db.refresh(order)
-    return order
 
 
 def delete_order_by_id(db: Session, order_id: int):
