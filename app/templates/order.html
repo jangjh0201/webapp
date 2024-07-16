@@ -6,21 +6,21 @@
     <div class="order-category">
         <h3>아이스크림 선택</h3>
         {% for ice_cream in ice_creams %}
-        <div class="selectable-box ice-cream-box" data-type="ice_cream" data-name="{{ ice_cream.name }}">{{ ice_cream.name }}</div>
+        <div class="selectable-box ice-cream-box" data-type="ice_cream" data-id="{{ ice_cream.id }}">{{ ice_cream.name }}</div>
         {% endfor %}
     </div>
 
     <div class="order-category">
         <h3>토핑 선택</h3>
         {% for topping in toppings %}
-        <div class="selectable-box topping-box" data-type="topping" data-name="{{ topping.name }}">{{ topping.name }}</div>
+        <div class="selectable-box topping-box" data-type="topping" data-id="{{ topping.id }}">{{ topping.name }}</div>
         {% endfor %}
     </div>
 
     <div class="order-category">
         <h3>소모품 선택</h3>
         {% for consumable in consumables %}
-        <div class="selectable-box consumable-box" data-type="consumable" data-name="{{ consumable.name }}">{{ consumable.name }}</div>
+        <div class="selectable-box consumable-box" data-type="consumable" data-id="{{ consumable.id }}">{{ consumable.name }}</div>
         {% endfor %}
     </div>
 
@@ -30,9 +30,10 @@
 </div>
 
 <form id="order-form" method="post" action="/order" style="display: none;">
-    <input type="hidden" name="ice_cream_name" id="ice_cream_name">
-    <input type="hidden" name="topping_names" id="topping_names">
-    <input type="hidden" name="consumable_names" id="consumable_names">
+    <input type="hidden" name="ice_cream_id" id="ice_cream_id">
+    <input type="hidden" name="topping_ids" id="topping_ids">
+    <input type="hidden" name="consumable_ids" id="consumable_ids">
+
 </form>
 
 <script>
@@ -60,13 +61,13 @@
         });
 
         function updateSelectedIds() {
-            const selectedIceCream = document.querySelector('.ice-cream-box.selected') ? document.querySelector('.ice-cream-box.selected').getAttribute('data-name') : '';
-            const selectedToppings = Array.from(document.querySelectorAll('.topping-box.selected')).map(box => box.getAttribute('data-name')).join(',');
-            const selectedConsumables = Array.from(document.querySelectorAll('.consumable-box.selected')).map(box => box.getAttribute('data-name')).join(',');
-            
-            document.getElementById('ice_cream_name').value = selectedIceCream;
-            document.getElementById('topping_names').value = selectedToppings;
-            document.getElementById('consumable_names').value = selectedConsumables;
+            const selectedIceCream = document.querySelector('.ice-cream-box.selected') ? document.querySelector('.ice-cream-box.selected').getAttribute('data-id') : '';
+            const selectedToppings = Array.from(document.querySelectorAll('.topping-box.selected')).map(box => box.getAttribute('data-id')).join(',');
+            const selectedConsumables = Array.from(document.querySelectorAll('.consumable-box.selected')).map(box => box.getAttribute('data-id')).join(',');
+
+            document.getElementById('ice_cream_id').value = selectedIceCream;
+            document.getElementById('topping_ids').value = selectedToppings;
+            document.getElementById('consumable_ids').value = selectedConsumables;
         }
 
         document.getElementById('submit-order').addEventListener('click', function() {
