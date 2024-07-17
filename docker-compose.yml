@@ -15,8 +15,6 @@ services:
     environment:
       MYSQL_DATABASE: ice_cream_db
       MYSQL_ROOT_PASSWORD: system
-    ports:
-      - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
     command: >

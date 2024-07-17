@@ -10,11 +10,11 @@ def create_ice_cream(db: Session, name: str, price: int, quantity: int):
     return ice_cream
 
 
-def get_ice_cream_by_id(db: Session, ice_cream_id: float):
+def read_ice_cream_by_id(db: Session, ice_cream_id: float):
     return db.query(IceCream).filter(IceCream.id == ice_cream_id).first()
 
 
-def get_all_ice_creams(db: Session):
+def read_all_ice_creams(db: Session):
     return db.query(IceCream).all()
 
 

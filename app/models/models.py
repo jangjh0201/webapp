@@ -1,6 +1,13 @@
+import sys
+import os
+
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+
+# 프로젝트 루트 디렉토리를 sys.path에 추가
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from database.database import Base
 
 # 중간 테이블 정의
