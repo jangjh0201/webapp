@@ -33,6 +33,7 @@
     <input type="hidden" name="ice_cream_id" id="ice_cream_id">
     <input type="hidden" name="topping_ids" id="topping_ids">
     <input type="hidden" name="consumable_ids" id="consumable_ids">
+
 </form>
 
 <script>
@@ -63,7 +64,7 @@
             const selectedIceCream = document.querySelector('.ice-cream-box.selected') ? document.querySelector('.ice-cream-box.selected').getAttribute('data-id') : '';
             const selectedToppings = Array.from(document.querySelectorAll('.topping-box.selected')).map(box => box.getAttribute('data-id')).join(',');
             const selectedConsumables = Array.from(document.querySelectorAll('.consumable-box.selected')).map(box => box.getAttribute('data-id')).join(',');
-            
+
             document.getElementById('ice_cream_id').value = selectedIceCream;
             document.getElementById('topping_ids').value = selectedToppings;
             document.getElementById('consumable_ids').value = selectedConsumables;

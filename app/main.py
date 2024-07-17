@@ -10,53 +10,67 @@ from sqlalchemy.orm import Session
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from utils.utils import get_item_id_by_name
-from models.models import Consumable, IceCream, Topping
+from models.models import Consumable, IceCream, Topping, Order
 from database.database import initialize_tables, SessionLocal
-from crud.ice_cream import (
+from database.crud.ice_cream import (
     create_ice_cream,
-    get_all_ice_creams,
+    read_all_ice_creams,
 )
-from crud.topping import (
+from database.crud.topping import (
     create_topping,
-    get_all_toppings,
+    read_all_toppings,
 )
-from crud.consumable import (
+from database.crud.consumable import (
     create_consumable,
-    get_all_consumables,
+    read_all_consumables,
 )
-from crud.order import (
+from database.crud.order import (
     create_order,
-    get_all_orders,
+    read_all_orders,
 )
 
 app = FastAPI()
 
-templates = Jinja2Templates(directory="app/templates")
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
+templates = Jinja2Templates(directory="app/resource/templates")
+app.mount("/static", StaticFiles(directory="app/resource/static"), name="static")
+
+
+# 테이블 및 데이터베이스 설정
+initialize_tables()
+db = SessionLocal()
 
 
 def get_db():
-    db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
 
 
-# 테이블 및 데이터베이스 설정
-initialize_tables()
+# 아이스크림 생성 및 조회 테스트
+mint = create_ice_cream(db, "mint", 2500, 100)
+chocolate = create_ice_cream(db, "choco", 2500, 100)
+strawberry = create_ice_cream(db, "strawberry", 2500, 100)
+
+# 토핑 생성 및 조회 테스트
+choco_ball = create_topping(db, "chocoball", 500, 100)
+cereal = create_topping(db, "cereal", 700, 100)
+oreo = create_topping(db, "oreo", 700, 100)
+
+# 소모품 생성 및 조회 테스트
+cup = create_consumable(db, "cup", 0, 100)
 
 
 @app.get("/")
-def read_home(request: Request):
+def show_home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
 @app.get("/item")
-def get_add_item_page(request: Request, db: Session = Depends(get_db)):
-    ice_creams = get_all_ice_creams(db)
-    toppings = get_all_toppings(db)
-    consumables = get_all_consumables(db)
+def show_item(request: Request, db: Session = Depends(get_db)):
+    ice_creams = read_all_ice_creams(db)
+    toppings = read_all_toppings(db)
+    consumables = read_all_consumables(db)
     return templates.TemplateResponse(
         "item.html",
         {
@@ -69,7 +83,7 @@ def get_add_item_page(request: Request, db: Session = Depends(get_db)):
 
 
 @app.post("/item")
-def create_new_item(
+def add_item(
     request: Request,
     item_type: str = Form(...),
     item_name: str = Form(...),
@@ -83,11 +97,11 @@ def create_new_item(
         create_topping(db, item_name, item_price, item_quantity)
     elif item_type == "consumable":
         create_consumable(db, item_name, item_price, item_quantity)
-    return get_add_item_page(request, db)
+    return show_item(request, db)
 
 
 @app.delete("/item/{item_type}/{item_id}")
-def delete_item(item_type: str, item_id: int, db: Session = Depends(get_db)):
+def remove_item(item_type: str, item_id: int, db: Session = Depends(get_db)):
     if item_type == "ice_cream":
         db.query(IceCream).filter(IceCream.id == item_id).delete()
     elif item_type == "topping":
@@ -99,11 +113,11 @@ def delete_item(item_type: str, item_id: int, db: Session = Depends(get_db)):
 
 
 @app.get("/order")
-def get_order_page(request: Request, db: Session = Depends(get_db)):
-    ice_creams = get_all_ice_creams(db)
-    toppings = get_all_toppings(db)
-    consumables = get_all_consumables(db)
-    consumables = [c for c in consumables if c.name != "컵"]
+def show_order(request: Request, db: Session = Depends(get_db)):
+    ice_creams = read_all_ice_creams(db)
+    toppings = read_all_toppings(db)
+    consumables = read_all_consumables(db)
+    consumables = [c for c in consumables if c.name != "cup"]
     return templates.TemplateResponse(
         "order.html",
         {
@@ -116,7 +130,7 @@ def get_order_page(request: Request, db: Session = Depends(get_db)):
 
 
 @app.post("/order")
-def create_new_order(
+def add_order(
     request: Request,
     ice_cream_name: str = Form(...),
     topping_names: Optional[str] = Form(None),  # 콤마로 구분된 토핑 이름 목록
@@ -146,11 +160,48 @@ def create_new_order(
     return templates.TemplateResponse("index.html", {"request": request})
 
 
+@app.post("/kiosk")
+async def add_order_by_kiosk(request: Request, db: Session = Depends(get_db)):
+    try:
+        body = await request.json()
+        order_details = body.get("OR", {})
+        icecream = order_details.get("icecream")
+        topping = order_details.get("topping")
+
+        if not icecream:
+            raise HTTPException(status_code=400, detail="Field 'icecream' is required")
+
+        print(f"Received order: icecream={icecream}, topping={topping}")
+
+        # 아이템 이름을 ID로 변환
+        ice_cream_id = get_item_id_by_name(db, "ice_cream", icecream)
+        if ice_cream_id is None:
+            raise HTTPException(status_code=400, detail="Invalid ice cream name")
+
+        topping_ids_list = []
+        if topping:
+            for name in topping.split(","):
+                topping_id = get_item_id_by_name(db, "topping", name.strip())
+                if topping_id:
+                    topping_ids_list.append(topping_id)
+
+        order = create_order(db, ice_cream_id, topping_ids_list, consumable_ids=[])
+
+        return {
+            "HTTPstatus": "201 Created",
+            "orderId": order.id,
+            "icecream": icecream,
+            "topping": topping,
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.get("/stock")
-def read_inventory_page(request: Request, db: Session = Depends(get_db)):
-    ice_creams = get_all_ice_creams(db)
-    toppings = get_all_toppings(db)
-    consumables = get_all_consumables(db)
+def show_inventory(request: Request, db: Session = Depends(get_db)):
+    ice_creams = read_all_ice_creams(db)
+    toppings = read_all_toppings(db)
+    consumables = read_all_consumables(db)
     inventory_data = {
         "ice_cream": {ic.name: ic.quantity for ic in ice_creams},
         "topping": {tp.name: tp.quantity for tp in toppings},
@@ -162,8 +213,8 @@ def read_inventory_page(request: Request, db: Session = Depends(get_db)):
 
 
 @app.get("/history")
-def read_order_history(request: Request, db: Session = Depends(get_db)):
-    orders = get_all_orders(db)
+def show_history(request: Request, db: Session = Depends(get_db)):
+    orders = read_all_orders(db)
     return templates.TemplateResponse(
         "history.html", {"request": request, "orders": orders}
     )

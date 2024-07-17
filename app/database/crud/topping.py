@@ -10,11 +10,11 @@ def create_topping(db: Session, name: str, price: int, quantity: int):
     return topping
 
 
-def get_topping_by_id(db: Session, topping_id: float):
+def read_topping_by_id(db: Session, topping_id: float):
     return db.query(Topping).filter(Topping.id == topping_id).first()
 
 
-def get_all_toppings(db: Session):
+def read_all_toppings(db: Session):
     return db.query(Topping).all()
 
 
