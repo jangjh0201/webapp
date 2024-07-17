@@ -1,6 +1,5 @@
 import sys
 import os
-from typing import Optional
 from fastapi import FastAPI, Request, Form, Depends, HTTPException
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
