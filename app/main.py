@@ -12,42 +12,42 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from utils.utils import get_item_id_by_name
 from models.models import Consumable, IceCream, Topping, Order
 from database.database import initialize_tables, SessionLocal
-from crud.ice_cream import (
+from database.crud.ice_cream import (
     create_ice_cream,
     read_all_ice_creams,
 )
-from crud.topping import (
+from database.crud.topping import (
     create_topping,
     read_all_toppings,
 )
-from crud.consumable import (
+from database.crud.consumable import (
     create_consumable,
     read_all_consumables,
 )
-from crud.order import (
+from database.crud.order import (
     create_order,
     read_all_orders,
 )
 
 app = FastAPI()
 
-templates = Jinja2Templates(directory="app/templates")
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
+templates = Jinja2Templates(directory="app/resource/templates")
+app.mount("/static", StaticFiles(directory="app/resource/static"), name="static")
+
+
+# 테이블 및 데이터베이스 설정
+initialize_tables()
+
+db = SessionLocal()
 
 
 def get_db():
-    db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
 
 
-# 테이블 및 데이터베이스 설정
-initialize_tables()
-
-# 테스트
-db = SessionLocal()
 # 아이스크림 생성 및 조회 테스트
 mint = create_ice_cream(db, "mint", 2500, 100)
 chocolate = create_ice_cream(db, "choco", 2500, 100)

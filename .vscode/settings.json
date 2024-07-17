@@ -1,5 +1,10 @@
 {
     "git.ignoreLimitWarning": true,
     // 가상환경 default로 실행
-    "python.defaultInterpreterPath": "/home/jangjh0201/venv/webapp_venv/bin/python"
+    "python.defaultInterpreterPath": "/home/jangjh0201/venv/webapp_venv/bin/python",
+    "python.testing.pytestArgs": [
+        "app"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
 }
