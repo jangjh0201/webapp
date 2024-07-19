@@ -40,3 +40,12 @@ class Order(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class RobotLog(BaseModel):
+    id: int
+    status: int
+    log_time: Optional[str] = None
+
+    class Config:
+        orm_mode = True
