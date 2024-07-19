@@ -91,8 +91,44 @@ def add_order(
     consumable_ids: str = Form(None),
     db: Session = Depends(get_db),
 ):
-    order_service.add_order(ice_cream_id, topping_ids, consumable_ids, db)
-    return templates.TemplateResponse("index.html", {"request": request})
+    try:
+        order_service.add_order(ice_cream_id, topping_ids, consumable_ids, db)
+        return templates.TemplateResponse(
+            "index.html", {"request": request, "message": "주문이 완료되었습니다."}
+        )
+    except HTTPException as e:
+        details = e.detail
+        error_messages = []
+        for detail in details:
+            if detail["code"] == 404:
+                if detail["type"] == "icecream":
+                    error_messages.append(
+                        f"아이스크림 '{detail['name']}'가 존재하지 않습니다."
+                    )
+                elif detail["type"] == "topping":
+                    error_messages.append(
+                        f"토핑 '{detail['name']}'가 존재하지 않습니다."
+                    )
+                elif detail["type"] == "consumable":
+                    error_messages.append(
+                        f"소모품 '{detail['name']}'가 존재하지 않습니다."
+                    )
+            elif detail["code"] == 409:
+                if detail["type"] == "icecream":
+                    error_messages.append(
+                        f"아이스크림 '{detail['name']}'의 재고가 부족합니다."
+                    )
+                elif detail["type"] == "topping":
+                    error_messages.append(
+                        f"토핑 '{detail['name']}'의 재고가 부족합니다."
+                    )
+                elif detail["type"] == "consumable":
+                    error_messages.append(
+                        f"소모품 '{detail['name']}'의 재고가 부족합니다."
+                    )
+        return templates.TemplateResponse(
+            "order.html", {"request": request, "errors": error_messages}
+        )
 
 
 @app.post("/kiosk")
