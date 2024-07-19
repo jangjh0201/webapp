@@ -8,10 +8,10 @@ from starlette.responses import JSONResponse
 
 # 프로젝트 루트 디렉토리를 sys.path에 추가
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
-from utils.utils import get_item_id_by_name
+from app.service import robot_service
 from database.database import SessionLocal
 from service import item_service, order_service
+
 
 app = FastAPI()
 
@@ -62,7 +62,6 @@ def add_item(
 
 @app.delete("/item/{item_type}/{item_id}")
 def remove_item(item_type: str, item_id: int, db: Session = Depends(get_db)):
-
     if item_service.remove_item(item_type, item_id, db):
         return {"success": True}
     else:
@@ -97,77 +96,32 @@ def add_order(
             "index.html", {"request": request, "message": "주문이 완료되었습니다."}
         )
     except HTTPException as e:
-        details = e.detail
-        error_messages = []
-        for detail in details:
-            if detail["code"] == 404:
-                if detail["type"] == "icecream":
-                    error_messages.append(
-                        f"아이스크림 '{detail['name']}'가 존재하지 않습니다."
-                    )
-                elif detail["type"] == "topping":
-                    error_messages.append(
-                        f"토핑 '{detail['name']}'가 존재하지 않습니다."
-                    )
-                elif detail["type"] == "consumable":
-                    error_messages.append(
-                        f"소모품 '{detail['name']}'가 존재하지 않습니다."
-                    )
-            elif detail["code"] == 409:
-                if detail["type"] == "icecream":
-                    error_messages.append(
-                        f"아이스크림 '{detail['name']}'의 재고가 부족합니다."
-                    )
-                elif detail["type"] == "topping":
-                    error_messages.append(
-                        f"토핑 '{detail['name']}'의 재고가 부족합니다."
-                    )
-                elif detail["type"] == "consumable":
-                    error_messages.append(
-                        f"소모품 '{detail['name']}'의 재고가 부족합니다."
-                    )
-        return templates.TemplateResponse(
-            "order.html", {"request": request, "errors": error_messages}
+        return JSONResponse(
+            status_code=e.status_code, content={"OR": {"detail": e.detail}}
         )
 
 
 @app.post("/kiosk")
 async def add_order_by_kiosk(request: Request, db: Session = Depends(get_db)):
-    body = await request.json()
-    order_details = body.get("OR", {})
-
     try:
-        result = await order_service.add_order_by_kiosk(order_details, db)
+        result = await order_service.add_order_by_kiosk(await request.json(), db)
         return JSONResponse(status_code=201, content={"OR": result})
     except HTTPException as e:
-        details = e.detail
-        error_messages = []
-        for detail in details:
-            if detail["code"] == 404:
-                if detail["type"] == "icecream":
-                    error_messages.append(
-                        f"아이스크림 '{detail['name']}'가 존재하지 않습니다."
-                    )
-                elif detail["type"] == "topping":
-                    error_messages.append(
-                        f"토핑 '{detail['name']}'가 존재하지 않습니다."
-                    )
-            elif detail["code"] == 409:
-                if detail["type"] == "icecream":
-                    error_messages.append(
-                        f"아이스크림 '{detail['name']}'의 재고가 부족합니다."
-                    )
-                elif detail["type"] == "topping":
-                    error_messages.append(
-                        f"토핑 '{detail['name']}'의 재고가 부족합니다."
-                    )
-                elif detail["type"] == "consumable":
-                    error_messages.append(
-                        f"소모품 '{detail['name']}'의 재고가 부족합니다."
-                    )
         return JSONResponse(
-            status_code=e.status_code, content={"OR": {"detail": error_messages}}
+            status_code=e.status_code, content={"OR": {"detail": e.detail}}
         )
+
+
+@app.post("/robot")
+async def add_robot_log(request: Request, db: Session = Depends(get_db)):
+    robot_service.add_robot_log(await request.json(), db)
+    return JSONResponse(status_code=201, content={"message": "로그가 저장되었습니다."})
+
+
+@app.get("/log")
+def show_logs(request: Request, db: Session = Depends(get_db)):
+    logs = robot_service.get_all_logs(db)
+    return templates.TemplateResponse("log.html", {"request": request, "logs": logs})
 
 
 @app.get("/stock")
