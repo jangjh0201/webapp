@@ -120,7 +120,7 @@ async def add_robot_log(request: Request, db: Session = Depends(get_db)):
 
 @app.get("/log")
 def show_logs(request: Request, db: Session = Depends(get_db)):
-    logs = robot_service.get_all_logs(db)
+    logs = robot_service.show_all_logs(db)
     return templates.TemplateResponse("log.html", {"request": request, "logs": logs})
 
 
