@@ -32,61 +32,59 @@ def add_order(ice_cream_id: int, topping_ids: str, consumable_ids: str, db: Sess
     # 아이스크림 재고 확인
     ice_cream = db.query(IceCream).filter(IceCream.id == ice_cream_id).first()
     if ice_cream is None:
-        details.append({"type": "icecream", "name": "unknown", "code": 404})
+        details.append(f"아이스크림 '{ice_cream_id}'가 존재하지 않습니다.")
     elif ice_cream.quantity <= 0:
-        details.append({"type": "icecream", "name": ice_cream.name, "code": 409})
+        details.append(f"아이스크림 '{ice_cream.name}'의 재고가 부족합니다.")
 
     # 토핑 재고 확인
     for topping_id in topping_ids_list:
         topping = db.query(Topping).filter(Topping.id == topping_id).first()
         if topping is None:
-            details.append({"type": "topping", "name": "unknown", "code": 404})
+            details.append(f"토핑 '{topping_id}'가 존재하지 않습니다.")
         elif topping.quantity <= 0:
-            details.append({"type": "topping", "name": topping.name, "code": 409})
+            details.append(f"토핑 '{topping.name}'의 재고가 부족합니다.")
 
     # 소모품 재고 확인
     for consumable_id in consumable_ids_list:
         consumable = db.query(Consumable).filter(Consumable.id == consumable_id).first()
         if consumable is None:
-            details.append({"type": "consumable", "name": "unknown", "code": 404})
+            details.append(f"소모품 '{consumable_id}'가 존재하지 않습니다.")
         elif consumable.quantity <= 0:
-            details.append({"type": "consumable", "name": consumable.name, "code": 409})
+            details.append(f"소모품 '{consumable.name}'의 재고가 부족합니다.")
 
     # 컵 재고 확인
     cup = db.query(Consumable).filter(Consumable.name == "cup").first()
     if cup is None:
-        details.append({"type": "consumable", "name": "cup", "code": 404})
+        details.append("컵이 존재하지 않습니다.")
     elif cup.quantity <= 0:
-        details.append({"type": "consumable", "name": "cup", "code": 409})
+        details.append("컵 재고가 부족합니다.")
 
     if details:
-        raise HTTPException(status_code=400, detail=details)
+        raise HTTPException(status_code=409, detail=details)
     else:
         # 재고가 충분하면 주문 생성
-        create_order(db, ice_cream_id, topping_ids_list, consumable_ids_list)
-        details = [{"code": 201}]
-        return details
+        order = create_order(db, ice_cream_id, topping_ids_list, consumable_ids_list)
+        return order
 
 
-async def add_order_by_kiosk(order_details: dict, db: Session):
-    icecream = order_details.get("icecream")
-    topping = order_details.get("topping")
+async def add_order_by_kiosk(json_data: dict, db: Session):
+    detail_body = json_data.get("OR", {})
+    icecream = detail_body.get("icecream")
+    topping = detail_body.get("topping")
 
     if not icecream:
-        raise HTTPException(
-            status_code=400, detail=[{"type": "icecream", "name": "required"}]
-        )
+        raise HTTPException(status_code=400, detail=["아이스크림 선택은 필수입니다."])
 
     details = []
 
     # 아이스크림 존재 or 재고 여부 확인
     ice_cream_id = get_item_id_by_name(db, "ice_cream", icecream)
     if ice_cream_id is None:
-        details.append({"type": "icecream", "name": icecream, "code": 404})
+        details.append(f"아이스크림 '{icecream}' 부재")
     else:
         ice_cream = db.query(IceCream).filter(IceCream.id == ice_cream_id).first()
         if ice_cream.quantity <= 0:
-            details.append({"type": "icecream", "name": icecream, "code": 409})
+            details.append(f"아이스크림 '{icecream}' 재고 부족")
 
     # 토핑 존재 or 재고 여부 확인
     topping_ids_list = []
@@ -94,33 +92,27 @@ async def add_order_by_kiosk(order_details: dict, db: Session):
         for name in topping.split(","):
             topping_id = get_item_id_by_name(db, "topping", name.strip())
             if topping_id is None:
-                details.append({"type": "topping", "name": name.strip(), "code": 404})
+                details.append(f"토핑 '{name.strip()}' 부재")
             else:
                 topping_item = (
                     db.query(Topping).filter(Topping.id == topping_id).first()
                 )
                 if topping_item.quantity <= 0:
-                    details.append(
-                        {"type": "topping", "name": name.strip(), "code": 409}
-                    )
+                    details.append(f"토핑 '{name.strip()}' 재고 부족")
                 topping_ids_list.append(topping_id)
 
     # 컵 재고 여부 확인
     cup = db.query(Consumable).filter(Consumable.name == "cup").first()
     if cup.quantity <= 0:
-        details.append({"type": "consumable", "name": "cup", "code": 409})
+        details.append("컵 재고가 부족합니다.")
 
     if details:
-        raise HTTPException(status_code=400, detail=details)
+        raise HTTPException(status_code=409, detail=details)
 
     order = create_order(db, ice_cream_id, topping_ids_list, consumable_ids=[])
 
     response_content = {
         "orderId": order.id,
-        # "detail": {
-        #     "icecream": icecream,
-        #     "topping": topping,
-        # },
     }
     return response_content
 
