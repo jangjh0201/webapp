@@ -2,7 +2,8 @@ from sqlalchemy.orm import Session
 from models.models import RobotLog
 
 
-def create_robot_log(db: Session, robot_log: int):
+def create_robot_log(db: Session, status: int):
+    robot_log = RobotLog(status=status)
     db.add(robot_log)
     db.commit()
     db.refresh(robot_log)

@@ -1,7 +1,11 @@
 from sqlalchemy.orm import Session
-from database.crud.ice_cream import read_all_ice_creams
-from database.crud.topping import read_all_toppings
-from database.crud.consumable import read_all_consumables
+from database.crud.ice_cream import read_all_ice_creams, read_ice_cream_by_id
+from database.crud.topping import read_all_toppings, read_topping_by_id
+from database.crud.consumable import (
+    read_all_consumables,
+    read_consumable_by_id,
+    read_cup,
+)
 from database.crud.order import (
     create_order,
     read_all_orders,
@@ -30,7 +34,7 @@ def add_order(ice_cream_id: int, topping_ids: str, consumable_ids: str, db: Sess
     details = []
 
     # 아이스크림 재고 확인
-    ice_cream = db.query(IceCream).filter(IceCream.id == ice_cream_id).first()
+    ice_cream = read_ice_cream_by_id(ice_cream_id)
     if ice_cream is None:
         details.append(f"아이스크림 '{ice_cream_id}'가 존재하지 않습니다.")
     elif ice_cream.quantity <= 0:
@@ -38,7 +42,7 @@ def add_order(ice_cream_id: int, topping_ids: str, consumable_ids: str, db: Sess
 
     # 토핑 재고 확인
     for topping_id in topping_ids_list:
-        topping = db.query(Topping).filter(Topping.id == topping_id).first()
+        topping = read_topping_by_id(topping_id)
         if topping is None:
             details.append(f"토핑 '{topping_id}'가 존재하지 않습니다.")
         elif topping.quantity <= 0:
@@ -46,14 +50,14 @@ def add_order(ice_cream_id: int, topping_ids: str, consumable_ids: str, db: Sess
 
     # 소모품 재고 확인
     for consumable_id in consumable_ids_list:
-        consumable = db.query(Consumable).filter(Consumable.id == consumable_id).first()
+        consumable = read_consumable_by_id(consumable_id)
         if consumable is None:
             details.append(f"소모품 '{consumable_id}'가 존재하지 않습니다.")
         elif consumable.quantity <= 0:
             details.append(f"소모품 '{consumable.name}'의 재고가 부족합니다.")
 
     # 컵 재고 확인
-    cup = db.query(Consumable).filter(Consumable.name == "cup").first()
+    cup = read_cup()
     if cup is None:
         details.append("컵이 존재하지 않습니다.")
     elif cup.quantity <= 0:
@@ -82,7 +86,7 @@ async def add_order_by_kiosk(json_data: dict, db: Session):
     if ice_cream_id is None:
         details.append(f"아이스크림 '{icecream}' 부재")
     else:
-        ice_cream = db.query(IceCream).filter(IceCream.id == ice_cream_id).first()
+        ice_cream = read_ice_cream_by_id(db, ice_cream_id)
         if ice_cream.quantity <= 0:
             details.append(f"아이스크림 '{icecream}' 재고 부족")
 
@@ -94,15 +98,13 @@ async def add_order_by_kiosk(json_data: dict, db: Session):
             if topping_id is None:
                 details.append(f"토핑 '{name.strip()}' 부재")
             else:
-                topping_item = (
-                    db.query(Topping).filter(Topping.id == topping_id).first()
-                )
+                topping_item = read_topping_by_id(db, topping_id)
                 if topping_item.quantity <= 0:
                     details.append(f"토핑 '{name.strip()}' 재고 부족")
                 topping_ids_list.append(topping_id)
 
     # 컵 재고 여부 확인
-    cup = db.query(Consumable).filter(Consumable.name == "cup").first()
+    cup = read_cup(db)
     if cup.quantity <= 0:
         details.append("컵 재고가 부족합니다.")
 

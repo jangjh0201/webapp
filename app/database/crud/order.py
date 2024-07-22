@@ -1,6 +1,5 @@
 from sqlalchemy.orm import Session
 from models.models import Order, IceCream, Topping, Consumable
-from fastapi import HTTPException
 
 
 def create_order(
