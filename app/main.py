@@ -23,11 +23,11 @@ db = SessionLocal()
 def add_test_data(db: Session):
     # 아이스크림 생성
     create_ice_cream(db, "mint", 2500, 100)
-    create_ice_cream(db, "choco", 2500, 0)
+    create_ice_cream(db, "choco", 2500, 100)
     create_ice_cream(db, "strawberry", 2500, 100)
 
     # 토핑 생성
-    create_topping(db, "chocoball", 500, 0)
+    create_topping(db, "chocoball", 500, 100)
     create_topping(db, "cereal", 700, 100)
     create_topping(db, "oreo", 700, 100)
 

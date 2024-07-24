@@ -45,7 +45,6 @@ class Order(BaseModel):
 class RobotLog(BaseModel):
     id: int
     status: int
-    log_time: Optional[str] = None
 
     class Config:
         orm_mode = True
