@@ -1,0 +1,31 @@
+/* static/css/header.css */
+
+header {
+    background-color: #333;
+    color: white;
+    padding: 1.25rem 0;
+    text-align: center;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+nav {
+    margin-top: 0;
+    display: flex; /* Flexbox 사용 */
+    justify-content: center; /* 중앙 정렬 */
+}
+
+nav a {
+    color: white;
+    margin: 0 1rem;
+    text-decoration: none;
+    font-size: 1.25rem;
+    white-space: nowrap; /* 글씨가 줄바꿈되지 않도록 설정 */
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
