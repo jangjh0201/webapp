@@ -1,3 +1,4 @@
+from datetime import datetime
 from sqlalchemy.orm import Session
 from database.crud.ice_cream import read_all_ice_creams, read_ice_cream_by_id
 from database.crud.topping import read_all_toppings, read_topping_by_id
@@ -11,11 +12,11 @@ from database.crud.order import (
     read_all_orders,
 )
 from utils.utils import get_item_id_by_name
-from models.models import IceCream, Topping, Consumable
+from models.models import IceCream, Order, Topping, Consumable
 from fastapi import HTTPException
 
 
-def show_order(db: Session):
+def get_all_orders(db: Session):
     ice_creams = read_all_ice_creams(db)
     toppings = read_all_toppings(db)
     consumables = read_all_consumables(db)
@@ -119,6 +120,18 @@ async def add_order_by_kiosk(json_data: dict, db: Session):
     return response_content
 
 
-def show_history(db: Session):
+def get_all_histories(db: Session):
     orders = read_all_orders(db)
     return orders
+
+
+def edit_order_time(db: Session, order_id: int, new_order_time: datetime):
+    order = db.query(Order).filter(Order.id == order_id).first()
+    if not order:
+        raise HTTPException(
+            status_code=404, detail=f"주문번호 {order_id}번이 존재하지 않습니다."
+        )
+    order.order_time = new_order_time
+    db.commit()
+    db.refresh(order)
+    return order

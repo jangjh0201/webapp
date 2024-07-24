@@ -1,3 +1,4 @@
+from datetime import datetime
 from sqlalchemy.orm import Session
 from models.models import Order, IceCream, Topping, Consumable
 
@@ -60,6 +61,14 @@ def update_order(
             order.consumables.append(consumable)
         db.commit()
         db.refresh(order)
+
+
+def update_order_time(db: Session, order_id: int, new_order_time: datetime):
+    order = db.query(Order).filter(Order.id == order_id).first()
+    order.order_time = new_order_time
+    db.commit()
+    db.refresh(order)
+    return order
 
 
 def delete_order_by_id(db: Session, order_id: int):
