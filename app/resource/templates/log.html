@@ -1,11 +1,14 @@
 {% extends "header.html" %}
-
+{% block head %}
+<link rel="stylesheet" href="/static/css/common.css">
+<link rel="stylesheet" href="/static/css/log.css">
+{% endblock %}
 {% block content %}
 <h2>로봇 로그</h2>
 
 {% if logs %}
 <div class="table-container">
-    <table>
+    <table class="log-table">
         <thead>
             <tr>
                 <th>로그 ID</th>
