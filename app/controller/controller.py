@@ -1,16 +1,19 @@
+from datetime import datetime
+import io
 import sys
 import os
+import base64
 from fastapi import FastAPI, Request, Form, Depends, HTTPException
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
-from starlette.responses import JSONResponse
+from starlette.responses import HTMLResponse, JSONResponse
+import matplotlib.pyplot as plt
 
 # 프로젝트 루트 디렉토리를 sys.path에 추가
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from database.database import SessionLocal
-from service import item_service, order_service, robot_service
-
+from service import item_service, order_service, robot_service, sales_service
 
 app = FastAPI()
 
@@ -34,7 +37,7 @@ def show_home(request: Request):
 
 @app.get("/item")
 def show_item(request: Request, db: Session = Depends(get_db)):
-    ice_creams, toppings, consumables = item_service.show_item(db)
+    ice_creams, toppings, consumables = item_service.get_all_items(db)
     return templates.TemplateResponse(
         "item.html",
         {
@@ -56,7 +59,7 @@ def add_item(
     db: Session = Depends(get_db),
 ):
     item_service.add_item(item_type, item_name, item_price, item_quantity, db)
-    return show_item(request, db)
+    return item_service.get_all_items(request, db)
 
 
 @app.delete("/item/{item_type}/{item_id}")
@@ -69,7 +72,7 @@ def remove_item(item_type: str, item_id: int, db: Session = Depends(get_db)):
 
 @app.get("/order")
 def show_order(request: Request, db: Session = Depends(get_db)):
-    ice_creams, toppings, consumables = order_service.show_order(db)
+    ice_creams, toppings, consumables = order_service.get_all_orders(db)
     return templates.TemplateResponse(
         "order.html",
         {
@@ -119,13 +122,13 @@ async def add_robot_log(request: Request, db: Session = Depends(get_db)):
 
 @app.get("/log")
 def show_logs(request: Request, db: Session = Depends(get_db)):
-    logs = robot_service.show_all_logs(db)
+    logs = robot_service.get_all_logs(db)
     return templates.TemplateResponse("log.html", {"request": request, "logs": logs})
 
 
 @app.get("/stock")
 def show_inventory(request: Request, db: Session = Depends(get_db)):
-    ice_creams, toppings, consumables = item_service.show_inventory(db)
+    ice_creams, toppings, consumables = item_service.get_all_inventories(db)
     return templates.TemplateResponse(
         "stock.html",
         {
@@ -141,7 +144,52 @@ def show_inventory(request: Request, db: Session = Depends(get_db)):
 
 @app.get("/history")
 def show_history(request: Request, db: Session = Depends(get_db)):
-    orders = order_service.show_history(db)
+    orders = order_service.get_all_histories(db)
     return templates.TemplateResponse(
         "history.html", {"request": request, "orders": orders}
     )
+
+
+@app.get("/sales", response_class=HTMLResponse)
+def show_sales(request: Request, db: Session = Depends(get_db)):
+    sales_data = sales_service.get_sales_data(db)
+    dates, choco_sales, mint_sales, strawberry_sales = sales_service.process_data(
+        sales_data
+    )
+
+    # 그래프를 그립니다.
+    plt.figure(figsize=(10, 5))
+    plt.plot(dates, choco_sales, label="Choco", color="chocolate")
+    plt.plot(dates, mint_sales, label="Mint", color="lightgreen")
+    plt.plot(dates, strawberry_sales, label="Strawberry", color="salmon")
+
+    plt.xlabel("Date")
+    plt.ylabel("Total Sales")
+    plt.title("Sales by Flavor")
+    plt.legend()
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+
+    # 그래프를 HTML에 삽입할 수 있는 형식으로 변환합니다.
+    png_image = io.BytesIO()
+    plt.savefig(png_image, format="png")
+    png_image_b64_string = "data:image/png;base64," + base64.b64encode(
+        png_image.getvalue()
+    ).decode("utf8")
+
+    return templates.TemplateResponse(
+        "sales.html", {"request": request, "sales_data": png_image_b64_string}
+    )
+
+
+@app.post("/test")
+async def test_order(request: Request, db: Session = Depends(get_db)):
+    try:
+        json_data = await request.json()
+        order_time = json_data.get("OR", {}).get("order_time")
+        result = await order_service.add_order_by_kiosk(json_data, db)
+        order_id = result["orderId"]
+        order_service.edit_order_time(db, order_id, order_time)
+        return JSONResponse(status_code=201, content={"orderId": order_id})
+    except HTTPException as e:
+        return JSONResponse(status_code=e.status_code, content={"detail": e.detail})
