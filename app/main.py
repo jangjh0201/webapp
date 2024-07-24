@@ -32,7 +32,7 @@ def add_test_data(db: Session):
     create_topping(db, "oreo", 700, 100)
 
     # 소모품 생성
-    create_consumable(db, "cup", 0, 100)
+    create_consumable(db, "cup", 0, 200)
 
 
 # 테스트 데이터 추가
