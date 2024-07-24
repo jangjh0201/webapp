@@ -121,6 +121,19 @@ button:hover {
     pointer-events: none;
 }
 
+/* 매출 페이지 스타일 */
+.sales-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.sales-container img {
+    max-width: 100%;
+    height: auto;
+}
+
 /* 재고 페이지 스타일 */
 .inventory-container {
     width: 100%; /* 부모 컨테이너의 가로 길이를 100%로 설정 */
