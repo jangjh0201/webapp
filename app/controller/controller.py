@@ -159,20 +159,39 @@ def show_sales(request: Request, db: Session = Depends(get_db)):
 
     # 그래프를 그립니다.
     plt.figure(figsize=(10, 5))
-    plt.plot(dates, choco_sales, label="Choco", color="chocolate")
-    plt.plot(dates, mint_sales, label="Mint", color="lightgreen")
-    plt.plot(dates, strawberry_sales, label="Strawberry", color="salmon")
 
-    plt.xlabel("Date")
-    plt.ylabel("Total Sales")
-    plt.title("Sales by Flavor")
-    plt.legend()
-    plt.xticks(rotation=45)
-    plt.tight_layout()
+    if dates:
+        plt.plot(
+            dates, choco_sales, label="Choco", color="saddlebrown", linewidth=3
+        )  # 선의 굵기 설정
+        plt.plot(
+            dates, mint_sales, label="Mint", color="cyan", linewidth=3
+        )  # 선의 굵기 설정
+        plt.plot(
+            dates, strawberry_sales, label="Strawberry", color="hotpink", linewidth=3
+        )  # 선의 굵기 설정
+
+        plt.xlabel("Date")
+        plt.ylabel("Total Sales")
+        plt.title("Sales by Flavor")
+        plt.legend()
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+    else:
+        plt.text(
+            0.5,
+            0.5,
+            "No data available",
+            horizontalalignment="center",
+            verticalalignment="center",
+            transform=plt.gca().transAxes,
+            fontsize=20,
+        )  # 글자 크기 설정
+        plt.axis("off")
 
     # 그래프를 HTML에 삽입할 수 있는 형식으로 변환합니다.
     png_image = io.BytesIO()
-    plt.savefig(png_image, format="png")
+    plt.savefig(png_image, format="png", transparent=True)  # 배경을 투명으로 설정
     png_image_b64_string = "data:image/png;base64," + base64.b64encode(
         png_image.getvalue()
     ).decode("utf8")
