@@ -1,0 +1,40 @@
+/* static/css/history.css */
+.table-container {
+    width: 60%;
+    margin: 2rem auto;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #fff;
+    display: flex;
+    justify-content: center; /* 컨테이너 내부에서 중앙 정렬 */
+}
+
+.table-container table {
+    width: 100%; /* 테이블 너비를 컨테이너 너비에 맞춤 */
+    border-collapse: collapse;
+}
+
+.table-container th,
+.table-container td {
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    text-align: center;
+}
+
+.table-container th {
+    background-color: #f5f5dc; /* 베이지 색상 */
+}
+
+.table-container tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.table-container tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+h2 {
+    text-align: center;
+    margin-top: 2rem;
+}
