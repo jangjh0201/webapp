@@ -35,7 +35,7 @@ def add_order(ice_cream_id: int, topping_ids: str, consumable_ids: str, db: Sess
     details = []
 
     # 아이스크림 재고 확인
-    ice_cream = read_ice_cream_by_id(ice_cream_id)
+    ice_cream = read_ice_cream_by_id(db, ice_cream_id)
     if ice_cream is None:
         details.append(f"아이스크림 '{ice_cream_id}'가 존재하지 않습니다.")
     elif ice_cream.quantity <= 0:
@@ -43,7 +43,7 @@ def add_order(ice_cream_id: int, topping_ids: str, consumable_ids: str, db: Sess
 
     # 토핑 재고 확인
     for topping_id in topping_ids_list:
-        topping = read_topping_by_id(topping_id)
+        topping = read_topping_by_id(db, topping_id)
         if topping is None:
             details.append(f"토핑 '{topping_id}'가 존재하지 않습니다.")
         elif topping.quantity <= 0:
@@ -51,14 +51,14 @@ def add_order(ice_cream_id: int, topping_ids: str, consumable_ids: str, db: Sess
 
     # 소모품 재고 확인
     for consumable_id in consumable_ids_list:
-        consumable = read_consumable_by_id(consumable_id)
+        consumable = read_consumable_by_id(db, consumable_id)
         if consumable is None:
             details.append(f"소모품 '{consumable_id}'가 존재하지 않습니다.")
         elif consumable.quantity <= 0:
             details.append(f"소모품 '{consumable.name}'의 재고가 부족합니다.")
 
     # 컵 재고 확인
-    cup = read_cup()
+    cup = read_cup(db)
     if cup is None:
         details.append("컵이 존재하지 않습니다.")
     elif cup.quantity <= 0:

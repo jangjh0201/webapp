@@ -59,7 +59,7 @@ def add_item(
     db: Session = Depends(get_db),
 ):
     item_service.add_item(item_type, item_name, item_price, item_quantity, db)
-    return item_service.get_all_items(request, db)
+    return item_service.get_all_items(db)
 
 
 @app.delete("/item/{item_type}/{item_id}")
