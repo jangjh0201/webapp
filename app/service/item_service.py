@@ -5,7 +5,7 @@ from database.crud.topping import create_topping, read_all_toppings
 from database.crud.consumable import create_consumable, read_all_consumables
 
 
-def show_item(db: Session):
+def get_all_items(db: Session):
     ice_creams = read_all_ice_creams(db)
     toppings = read_all_toppings(db)
     consumables = read_all_consumables(db)
@@ -35,7 +35,7 @@ def remove_item(item_type: str, item_id: int, db: Session):
     return True
 
 
-def show_inventory(db: Session):
+def get_all_inventories(db: Session):
     ice_creams = {ic.name: ic.quantity for ic in read_all_ice_creams(db)}
     toppings = {tp.name: tp.quantity for tp in read_all_toppings(db)}
     consumables = {cs.name: cs.quantity for cs in read_all_consumables(db)}

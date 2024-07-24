@@ -8,6 +8,6 @@ def add_robot_log(json_data: dict, db: Session):
     create_robot_log(db, status)
 
 
-def show_all_logs(db: Session):
+def get_all_logs(db: Session):
     logs = read_all_robot_logs(db)
     return logs
