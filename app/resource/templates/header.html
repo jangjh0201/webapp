@@ -11,17 +11,26 @@
 <body>
     <header>
         <nav>
-            <a href="/">홈</a>
-            <a href="/item">추가</a>
-            <a href="/order">주문</a>
-            <a href="/stock">재고</a>
-            <a href="/history">내역</a>
-            <a href="/sales">매출</a>            
-            <a href="/log">로그</a>
+            <div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
+            <div class="nav-links">
+                <a href="/">홈</a>
+                <a href="/item">추가</a>
+                <a href="/order">주문</a>
+                <a href="/stock">재고</a>
+                <a href="/history">내역</a>
+                <a href="/sales">매출</a>
+                <a href="/log">로그</a>
+            </div>
         </nav>
     </header>
     <main class="container">
         {% block content %}{% endblock %}
     </main>
+    <script>
+        function toggleMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('show');
+        }
+    </script>
 </body>
 </html>

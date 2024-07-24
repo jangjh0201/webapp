@@ -10,11 +10,28 @@ header {
     top: 0;
     left: 0;
     z-index: 1000;
+    box-sizing: border-box; /* 패딩 포함하여 박스 사이즈 계산 */
 }
 
 nav {
-    margin-top: 0;
-    display: flex; /* Flexbox 사용 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 1rem;
+    position: relative; /* menu-icon을 포함한 flexbox 정렬을 위해 position 속성 추가 */
+}
+
+.menu-icon {
+    display: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    position: absolute; /* menu-icon을 왼쪽에 고정 */
+    left: 1rem;
+}
+
+.nav-links {
+    display: flex;
+    flex-wrap: wrap; /* Flexbox 사용 및 줄 바꿈 허용 */
     justify-content: center; /* 중앙 정렬 */
 }
 
@@ -28,4 +45,25 @@ nav a {
 
 nav a:hover {
     text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .menu-icon {
+        display: block; /* 작은 화면에서는 메뉴 아이콘 보이기 */
+    }
+
+    .nav-links {
+        display: none; /* 작은 화면에서는 숨김 */
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav-links.show {
+        display: flex; /* 햄버거 메뉴 클릭 시 보이도록 설정 */
+    }
+
+    nav a {
+        margin: 0.5rem 0; /* 세로 배치 시 간격 조정 */
+    }
 }
