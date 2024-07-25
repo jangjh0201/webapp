@@ -18,6 +18,10 @@ def read_all_consumables(db: Session):
     return db.query(Consumable).all()
 
 
+def read_cup(db: Session):
+    return db.query(Consumable).filter(Consumable.name == "cup").first()
+
+
 def update_consumable(
     db: Session,
     consumable_id: float,

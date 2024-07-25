@@ -1,0 +1,13 @@
+/* static/css/sales.css */
+.sales-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.sales-container img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 2rem;
+}

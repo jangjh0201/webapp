@@ -1,0 +1,29 @@
+name: Create PR to main
+
+on:
+  pull_request:
+    branches:
+      - dev
+    types:
+      - closed
+
+run-name: PR with ${{ github.actor }}
+
+jobs:
+  create-pr:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create Pull Request to main
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: main
+          branch: ${{ github.ref }}
+          title: "Automated PR from dev to main"
+          body: "This PR was automatically created from dev to main."
+          commit-message: "Automated PR: Merging changes from dev to main"

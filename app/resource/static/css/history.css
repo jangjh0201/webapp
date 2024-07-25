@@ -1,0 +1,60 @@
+/* static/css/history.css */
+.table-container {
+    width: 80%; /* 테이블 컨테이너가 화면 전체 너비를 차지하도록 설정 */
+    margin: 2rem auto;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #fff;
+    overflow-x: auto; /* 가로 스크롤 허용 */
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem; /* 기본 글꼴 크기 조정 */
+}
+
+.history-table th,
+.history-table td {
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    text-align: center;
+}
+
+.history-table th {
+    background-color: #f2f2f2; /* 베이지 색상 */
+    color: #333;
+    font-weight: bold;
+}
+
+.history-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.history-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.history-table td {
+    word-break: break-all; /* 긴 단어가 잘리도록 설정 */
+}
+
+h2 {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+/* 작은 화면에서의 스타일 조정 */
+@media (max-width: 768px) {
+    .history-table th,
+    .history-table td {
+        padding: 0.25rem;
+        font-size: 0.75rem; /* 글꼴 크기 줄임 */
+    }
+
+    .history-table th {
+        writing-mode: vertical-rl; /* 제목 행 글자를 세로로 나열 */
+        white-space: nowrap; /* 줄 바꿈 방지 */
+    }
+}
