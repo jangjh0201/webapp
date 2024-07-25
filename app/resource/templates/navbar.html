@@ -21,6 +21,7 @@
                 <a href="/stock" id="stock-link" style="display: none;">재고</a>
                 <a href="/sales" id="sales-link" style="display: none;">매출</a>
                 <a href="/log" id="log-link" style="display: none;">로그</a>
+                <a href="/camera" id="camera-link" style="display: none;">카메라</a>
                 <!-- 로그인/로그아웃 영역 -->
                 <a href="/login" id="login-link">로그인</a>
                 <a href="/logout" id="logout-link" style="display: none;">로그아웃</a>
@@ -44,12 +45,13 @@
                 document.getElementById('login-link').style.display = 'none';
                 document.getElementById('logout-link').style.display = 'block';
 
-                if (userNameValue === 'admin') {
+                if (userNameValue === 'addinedu') {
                     document.getElementById('item-link').style.display = 'block';
                     document.getElementById('history-link').style.display = 'block';
                     document.getElementById('stock-link').style.display = 'block';
                     document.getElementById('sales-link').style.display = 'block';
                     document.getElementById('log-link').style.display = 'block';
+                    document.getElementById('camera-link').style.display = 'block';
                 } else {
                     document.getElementById('order-link').style.display = 'block';
                 }
