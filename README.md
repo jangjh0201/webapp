@@ -4,7 +4,7 @@
 <https://youtu.be/QmEGj73KAvA>
 
 ## 📃프로젝트 소개
-![Untitled design]([https://github.com/user-attachments/assets/16efa1be-5663-42c4-948d-3846b29ccba2](https://github.com/aris-hi5/webapp/blob/feature/app/resource/static/images/character_1.png))
+![Untitled design](./app/resource/static/images/character_1.png)
 
 👋 HI5 프로젝트입니다.<br>
 👋 기본적인 기능을 안전하고 확실하게 수행하는 아이스크림 기계 개발이 특징입니다.<br>
