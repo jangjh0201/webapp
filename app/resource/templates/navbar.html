@@ -12,19 +12,18 @@
     <header>
         <nav>
             <div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
-            <div class="nav-links">
+            <div class="nav-links" id="nav-links">
                 <a href="/">홈</a>
-                <a href="/item">추가</a>
-                <a href="/order">주문</a>
-                <a href="/stock">재고</a>
-                <a href="/history">내역</a>
-                <a href="/sales">매출</a>
-                <a href="/log">로그</a>
-                {% if request.cookies.get('access-token') %}
-                <a href="/logout">로그아웃</a>
-                {% else %}
-                <a href="/login">로그인</a>
-                {% endif %}
+                <a href="/order" id="order-link">주문</a>
+                <!-- 관리자 전용 영역 -->
+                <a href="/item" id="item-link" style="display: none;">추가</a>
+                <a href="/history" id="history-link" style="display: none;">내역</a>
+                <a href="/stock" id="stock-link" style="display: none;">재고</a>
+                <a href="/sales" id="sales-link" style="display: none;">매출</a>
+                <a href="/log" id="log-link" style="display: none;">로그</a>
+                <!-- 로그인/로그아웃 영역 -->
+                <a href="/login" id="login-link">로그인</a>
+                <a href="/logout" id="logout-link" style="display: none;">로그아웃</a>
             </div>
         </nav>
     </header>
@@ -36,6 +35,26 @@
             const navLinks = document.querySelector('.nav-links');
             navLinks.classList.toggle('show');
         }
+
+        // 로그인 상태 확인 및 메뉴 항목 표시
+        document.addEventListener("DOMContentLoaded", function() {
+            const username = document.cookie.split('; ').find(row => row.startsWith('username='));
+            if (username) {
+                const userNameValue = username.split('=')[1];
+                document.getElementById('login-link').style.display = 'none';
+                document.getElementById('logout-link').style.display = 'block';
+
+                if (userNameValue === 'admin') {
+                    document.getElementById('item-link').style.display = 'block';
+                    document.getElementById('history-link').style.display = 'block';
+                    document.getElementById('stock-link').style.display = 'block';
+                    document.getElementById('sales-link').style.display = 'block';
+                    document.getElementById('log-link').style.display = 'block';
+                } else {
+                    document.getElementById('order-link').style.display = 'block';
+                }
+            }
+        });
     </script>
 </body>
 </html>
