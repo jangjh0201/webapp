@@ -1,5 +1,7 @@
+from datetime import datetime, timedelta
 import cv2
 from fastapi import APIRouter, Request, Form, Depends, HTTPException
+from matplotlib.ticker import MultipleLocator
 from sqlalchemy.orm import Session
 from starlette.responses import HTMLResponse, JSONResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
@@ -51,20 +53,76 @@ def show_sales(request: Request, db: Session = Depends(get_db)):
         sales_data
     )
 
+    # 날짜 형식 변환
+    formatted_dates = [datetime.strptime(date, "%Y-%m-%d") for date in dates]
+
     plt.figure(figsize=(10, 5))
 
     if dates:
-        plt.plot(dates, choco_sales, label="Choco", color="saddlebrown", linewidth=3)
-        plt.plot(dates, mint_sales, label="Mint", color="cyan", linewidth=3)
         plt.plot(
-            dates, strawberry_sales, label="Strawberry", color="hotpink", linewidth=3
+            formatted_dates,
+            choco_sales,
+            label="Choco",
+            color="saddlebrown",
+            linewidth=3,
         )
+        plt.plot(formatted_dates, mint_sales, label="Mint", color="cyan", linewidth=3)
+        plt.plot(
+            formatted_dates,
+            strawberry_sales,
+            label="Strawberry",
+            color="hotpink",
+            linewidth=3,
+        )
+
+        for i, date in enumerate(formatted_dates):
+            plt.annotate(
+                f"{choco_sales[i]}",
+                (date, choco_sales[i]),
+                textcoords="offset points",
+                xytext=(0, 10),
+                ha="center",
+            )
+            plt.annotate(
+                f"{mint_sales[i]}",
+                (date, mint_sales[i]),
+                textcoords="offset points",
+                xytext=(0, 10),
+                ha="center",
+            )
+            plt.annotate(
+                f"{strawberry_sales[i]}",
+                (date, strawberry_sales[i]),
+                textcoords="offset points",
+                xytext=(0, 10),
+                ha="center",
+            )
 
         plt.xlabel("Date")
         plt.ylabel("Total Sales")
         plt.title("Sales by Flavor")
         plt.legend()
         plt.xticks(rotation=45)
+
+        # 5일 간격으로 주요 눈금 설정
+        start_date = formatted_dates[0]
+        end_date = formatted_dates[-1]
+        ticker_dates = [
+            start_date + timedelta(days=x)
+            for x in range(0, (end_date - start_date).days + 1, 5)
+        ]
+        ticker_labels = [date.strftime("%m/%d") for date in ticker_dates]
+
+        plt.gca().set_xticks(ticker_dates)
+        plt.gca().set_xticklabels(ticker_labels)
+
+        # 작은 눈금 설정
+        ax = plt.gca()
+        ax.xaxis.set_minor_locator(MultipleLocator(1))
+        ax.tick_params(
+            which="minor", length=5, direction="inout", bottom=True
+        )  # 작은 눈금을 위 방향으로
+
         plt.tight_layout()
     else:
         plt.text(
@@ -79,7 +137,7 @@ def show_sales(request: Request, db: Session = Depends(get_db)):
         plt.axis("off")
 
     png_image = io.BytesIO()
-    plt.savefig(png_image, format="png", transparent=True)
+    plt.savefig(png_image, format="png", transparent=False)  # transparent=False로 변경
     png_image_b64_string = "data:image/png;base64," + base64.b64encode(
         png_image.getvalue()
     ).decode("utf8")

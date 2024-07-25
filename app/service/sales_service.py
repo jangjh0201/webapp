@@ -5,7 +5,7 @@ from models.models import Order, IceCream
 
 def get_sales_data(db: Session):
     today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-    one_week_ago = today - timedelta(days=7)
+    one_month_ago = today - timedelta(days=30)
 
     sales = (
         db.query(Order.order_time, IceCream.name, Order)
@@ -17,7 +17,7 @@ def get_sales_data(db: Session):
     sales_data = []
     for sale in sales:
         order_time = sale[0]
-        if order_time < one_week_ago:
+        if order_time < one_month_ago:
             continue
 
         total_price = sale[2].ice_cream.price
