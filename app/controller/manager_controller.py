@@ -1,6 +1,7 @@
+import cv2
 from fastapi import APIRouter, Request, Form, Depends, HTTPException
 from sqlalchemy.orm import Session
-from starlette.responses import HTMLResponse, JSONResponse
+from starlette.responses import HTMLResponse, JSONResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 from database.database import get_db
 from service import item_service, robot_service, sales_service, order_service
@@ -121,3 +122,28 @@ def remove_item(item_type: str, item_id: int, db: Session = Depends(get_db)):
         return {"success": True}
     else:
         return {"success": False}
+
+
+# 카메라 피드 캡처 함수
+def gen_frames():
+    cap = cv2.VideoCapture(0)
+    while True:
+        success, frame = cap.read()
+        if not success:
+            break
+        else:
+            ret, buffer = cv2.imencode(".jpg", frame)
+            frame = buffer.tobytes()
+            yield (b"--frame\r\n" b"Content-Type: image/jpeg\r\n\r\n" + frame + b"\r\n")
+
+
+@router.get("/camera_feed", dependencies=[Depends(manager)])
+def camera_feed():
+    return StreamingResponse(
+        gen_frames(), media_type="multipart/x-mixed-replace; boundary=frame"
+    )
+
+
+@router.get("/camera", dependencies=[Depends(manager)], response_class=HTMLResponse)
+def show_camera(request: Request):
+    return templates.TemplateResponse("camera.html", {"request": request})
