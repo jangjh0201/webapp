@@ -64,7 +64,7 @@ async def add_robot_log(request: Request, db: Session = Depends(get_db)):
 async def test_order(request: Request, db: Session = Depends(get_db)):
     try:
         json_data = await request.json()
-        order_time = json_data.get("order", {}).get("order_time")
+        order_time = json_data.get("OR", {}).get("order_time")
         result = await order_service.add_order_by_kiosk(json_data, db)
         order_id = result["orderId"]
         order_service.edit_order_time(db, order_id, order_time)
