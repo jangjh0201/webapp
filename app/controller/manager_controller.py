@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 import cv2
 from fastapi import APIRouter, Request, Form, Depends, HTTPException
 from matplotlib.ticker import MultipleLocator
+from matplotlib.dates import DayLocator, DateFormatter, date2num
+from matplotlib import font_manager, rc
 from sqlalchemy.orm import Session
 from starlette.responses import HTMLResponse, JSONResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
@@ -46,104 +48,125 @@ def show_history(request: Request, db: Session = Depends(get_db)):
     )
 
 
+# 한글 폰트 설정
+font_path = "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"
+font_manager.fontManager.addfont(font_path)
+rc("font", family="NanumGothic")
+
+
 @router.get("/sales", response_class=HTMLResponse, dependencies=[Depends(manager)])
 def show_sales(request: Request, db: Session = Depends(get_db)):
     sales_data = sales_service.get_sales_data(db)
     dates, choco_sales, mint_sales, strawberry_sales = sales_service.process_data(
         sales_data
     )
+    dates_volumes, choco_volumes, mint_volumes, strawberry_volumes = (
+        sales_service.process_data_for_volumes(sales_data)
+    )
 
     # 날짜 형식 변환
     formatted_dates = [datetime.strptime(date, "%Y-%m-%d") for date in dates]
+    formatted_date_strings = [date.strftime("%m/%d") for date in formatted_dates]
 
-    plt.figure(figsize=(10, 5))
+    # 총 매출액 계산
+    total_sales = [
+        choco_sales[i] + mint_sales[i] + strawberry_sales[i] for i in range(len(dates))
+    ]
 
-    if dates:
-        plt.plot(
-            formatted_dates,
-            choco_sales,
-            label="Choco",
-            color="saddlebrown",
-            linewidth=3,
+    # 공통 DayLocator 및 DateFormatter 설정
+    day_locator = DayLocator(interval=5)
+    date_formatter = DateFormatter("%m/%d")
+
+    # 첫 번째 그래프: 일자별 총매출액 꺾쇠 그래프
+    fig, ax1 = plt.subplots(figsize=(12, 6))  # 창 크기를 키움
+    ax1.plot(formatted_dates, total_sales, label="총 매출", color="blue", linewidth=3)
+
+    for i, date in enumerate(formatted_dates):
+        ax1.annotate(
+            f"{total_sales[i]}",
+            (date, total_sales[i]),
+            textcoords="offset points",
+            xytext=(0, 10),
+            ha="center",
         )
-        plt.plot(formatted_dates, mint_sales, label="Mint", color="cyan", linewidth=3)
-        plt.plot(
-            formatted_dates,
-            strawberry_sales,
-            label="Strawberry",
-            color="hotpink",
-            linewidth=3,
-        )
 
-        for i, date in enumerate(formatted_dates):
-            plt.annotate(
-                f"{choco_sales[i]}",
-                (date, choco_sales[i]),
-                textcoords="offset points",
-                xytext=(0, 10),
-                ha="center",
-            )
-            plt.annotate(
-                f"{mint_sales[i]}",
-                (date, mint_sales[i]),
-                textcoords="offset points",
-                xytext=(0, 10),
-                ha="center",
-            )
-            plt.annotate(
-                f"{strawberry_sales[i]}",
-                (date, strawberry_sales[i]),
-                textcoords="offset points",
-                xytext=(0, 10),
-                ha="center",
-            )
+    ax1.set_xlabel("날짜")
+    ax1.set_ylabel("총 매출")
+    ax1.set_title("일별 총 매출")
+    ax1.legend()
+    ax1.tick_params(axis="x")
 
-        plt.xlabel("Date")
-        plt.ylabel("Total Sales")
-        plt.title("Sales by Flavor")
-        plt.legend()
-        plt.xticks(rotation=45)
+    # 5일 간격으로 주요 눈금 설정
+    ax1.xaxis.set_major_locator(day_locator)
+    ax1.xaxis.set_major_formatter(date_formatter)
 
-        # 5일 간격으로 주요 눈금 설정
-        start_date = formatted_dates[0]
-        end_date = formatted_dates[-1]
-        ticker_dates = [
-            start_date + timedelta(days=x)
-            for x in range(0, (end_date - start_date).days + 1, 5)
-        ]
-        ticker_labels = [date.strftime("%m/%d") for date in ticker_dates]
+    # 작은 눈금 설정
+    ax1.xaxis.set_minor_locator(DayLocator(interval=1))
+    ax1.tick_params(which="minor", length=5, direction="inout", bottom=True)
 
-        plt.gca().set_xticks(ticker_dates)
-        plt.gca().set_xticklabels(ticker_labels)
+    plt.subplots_adjust(
+        top=0.85
+    )  # 상단 여백을 조정하여 라벨이 그래프 창을 넘어가지 않도록 함
 
-        # 작은 눈금 설정
-        ax = plt.gca()
-        ax.xaxis.set_minor_locator(MultipleLocator(1))
-        ax.tick_params(
-            which="minor", length=5, direction="inout", bottom=True
-        )  # 작은 눈금을 위 방향으로
-
-        plt.tight_layout()
-    else:
-        plt.text(
-            0.5,
-            0.5,
-            "No data available",
-            horizontalalignment="center",
-            verticalalignment="center",
-            transform=plt.gca().transAxes,
-            fontsize=20,
-        )
-        plt.axis("off")
-
-    png_image = io.BytesIO()
-    plt.savefig(png_image, format="png", transparent=False)  # transparent=False로 변경
-    png_image_b64_string = "data:image/png;base64," + base64.b64encode(
-        png_image.getvalue()
+    plt.tight_layout()
+    png_image_total_sales = io.BytesIO()
+    plt.savefig(png_image_total_sales, format="png", transparent=False)
+    png_image_total_sales_b64_string = "data:image/png;base64," + base64.b64encode(
+        png_image_total_sales.getvalue()
     ).decode("utf8")
+    plt.close()
+
+    # 두 번째 그래프: 일자별 각각의 아이스크림 매출량 막대그래프
+    fig, ax2 = plt.subplots(figsize=(12, 6))  # 창 크기를 키움
+
+    bar_width = 0.2
+    bar_positions = date2num(formatted_dates)
+
+    ax2.bar(
+        bar_positions - bar_width,
+        choco_volumes,
+        width=bar_width,
+        label="초코",
+        color="saddlebrown",
+    )
+    ax2.bar(bar_positions, mint_volumes, width=bar_width, label="민트", color="cyan")
+    ax2.bar(
+        bar_positions + bar_width,
+        strawberry_volumes,
+        width=bar_width,
+        label="딸기",
+        color="hotpink",
+    )
+
+    ax2.set_xlabel("날짜")
+    ax2.set_ylabel("매출량")
+    ax2.set_title("일별 아이스크림 매출량")
+    ax2.legend()
+    ax2.tick_params(axis="x")
+
+    # 5일 간격으로 주요 눈금 설정
+    ax2.xaxis.set_major_locator(day_locator)
+    ax2.xaxis.set_major_formatter(date_formatter)
+
+    # 작은 눈금 설정
+    ax2.xaxis.set_minor_locator(DayLocator(interval=1))
+    ax2.tick_params(which="minor", length=5, direction="inout", bottom=True)
+
+    plt.tight_layout()
+    png_image_icecream_sales = io.BytesIO()
+    plt.savefig(png_image_icecream_sales, format="png", transparent=False)
+    png_image_icecream_sales_b64_string = "data:image/png;base64," + base64.b64encode(
+        png_image_icecream_sales.getvalue()
+    ).decode("utf8")
+    plt.close()
 
     return templates.TemplateResponse(
-        "sales.html", {"request": request, "sales_data": png_image_b64_string}
+        "sales.html",
+        {
+            "request": request,
+            "total_sales_data": png_image_total_sales_b64_string,
+            "icecream_sales_data": png_image_icecream_sales_b64_string,
+        },
     )
 
 
