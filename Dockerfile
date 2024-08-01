@@ -1,6 +1,8 @@
 # Use the official Python image from the Docker Hub
 FROM python:3.10
 
+RUN apt-get update && apt-get install -y libgl1-mesa-glx fonts-nanum
+
 # Set the working directory
 WORKDIR /app
 

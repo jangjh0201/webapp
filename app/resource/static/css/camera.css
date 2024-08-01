@@ -1,0 +1,13 @@
+/* static/css/camera.css */
+.camera-container {
+    display: 80%;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.camera-container img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 2rem;
+}

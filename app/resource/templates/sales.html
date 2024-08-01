@@ -1,4 +1,4 @@
-{% extends "header.html" %}
+{% extends "navbar.html" %}
 
 {% block head %}
 <link rel="stylesheet" href="/static/css/common.css">
@@ -8,6 +8,11 @@
 {% block content %}
 <h2>매출량</h2>
 <div class="sales-container">
-    <img src="{{ sales_data }}" alt="Sales by Flavor">
+    <div class="sales-graph">
+        <img src="{{ total_sales_data }}" alt="총 매출">
+    </div>
+    <div class="sales-graph">
+        <img src="{{ icecream_sales_data }}" alt="아이스크림 매출량">
+    </div>
 </div>
 {% endblock %}
