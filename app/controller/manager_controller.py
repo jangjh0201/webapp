@@ -1,11 +1,9 @@
-from datetime import datetime, timedelta
-import cv2
+from datetime import datetime
 from fastapi import APIRouter, Request, Form, Depends, HTTPException
-from matplotlib.ticker import MultipleLocator
 from matplotlib.dates import DayLocator, DateFormatter, date2num
 from matplotlib import font_manager, rc
 from sqlalchemy.orm import Session
-from starlette.responses import HTMLResponse, JSONResponse, StreamingResponse
+from starlette.responses import HTMLResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 from database.database import get_db
 from service import item_service, robot_service, sales_service, order_service
@@ -20,12 +18,28 @@ templates = Jinja2Templates(directory="app/resource/templates")
 
 @router.get("/log", dependencies=[Depends(manager)])
 def show_logs(request: Request, db: Session = Depends(get_db)):
+    """
+    로그 조회 API
+    Args:
+        request: Request 객체
+        db: 데이터베이스 세션
+    Returns:
+        모든 로그 정보 리스트 반환 (HTML)
+    """
     logs = robot_service.get_all_logs(db)
     return templates.TemplateResponse("log.html", {"request": request, "logs": logs})
 
 
 @router.get("/stock", dependencies=[Depends(manager)])
 def show_inventory(request: Request, db: Session = Depends(get_db)):
+    """
+    재고 조회 API
+    Args:
+        request: Request 객체
+        db: 데이터베이스 세션
+    Returns:
+        모든 재고 정보 리스트 반환 (HTML)
+    """
     ice_creams, toppings, consumables = item_service.get_all_inventories(db)
     return templates.TemplateResponse(
         "stock.html",
@@ -42,6 +56,14 @@ def show_inventory(request: Request, db: Session = Depends(get_db)):
 
 @router.get("/history", dependencies=[Depends(manager)])
 def show_history(request: Request, db: Session = Depends(get_db)):
+    """
+    주문 내역 조회 API
+    Args:
+        request: Request 객체
+        db: 데이터베이스 세션
+    Returns:
+        모든 주문 내역 리스트 반환 (HTML)
+    """
     orders = order_service.get_all_histories(db)
     return templates.TemplateResponse(
         "history.html", {"request": request, "orders": orders}
@@ -56,6 +78,14 @@ rc("font", family="NanumGothic")
 
 @router.get("/sales", response_class=HTMLResponse, dependencies=[Depends(manager)])
 def show_sales(request: Request, db: Session = Depends(get_db)):
+    """
+    매출 조회 API
+    Args:
+        request: Request 객체
+        db: 데이터베이스 세션
+    Returns:
+        일별 총 매출 및 아이스크림 매출량 그래프 (HTML)
+    """
     sales_data = sales_service.get_sales_data(db)
     dates, choco_sales, mint_sales, strawberry_sales = sales_service.process_data(
         sales_data
@@ -172,6 +202,14 @@ def show_sales(request: Request, db: Session = Depends(get_db)):
 
 @router.get("/item", dependencies=[Depends(manager)])
 def show_item(request: Request, db: Session = Depends(get_db)):
+    """
+    아이템 조회 API
+    Args:
+        request: Request 객체
+        db: 데이터베이스 세션
+    Returns:
+        모든 아이템 정보 리스트 반환 (HTML)
+    """
     ice_creams, toppings, consumables = item_service.get_all_items(db)
     return templates.TemplateResponse(
         "item.html",
@@ -193,38 +231,58 @@ def add_item(
     item_quantity: int = Form(...),
     db: Session = Depends(get_db),
 ):
+    """
+    아이템 추가 API
+    Args:
+        item_type: 아이템 타입
+        item_name: 아이템 이름
+        item_price: 아이템 가격
+        item_quantity: 아이템 수량
+        db: 데이터베이스 세션
+    Returns:
+        모든 아이템 정보 리스트 반환 (JSON)
+    """
     item_service.add_item(item_type, item_name, item_price, item_quantity, db)
     return item_service.get_all_items(db)
 
 
 @router.delete("/item/{item_type}/{item_id}", dependencies=[Depends(manager)])
 def remove_item(item_type: str, item_id: int, db: Session = Depends(get_db)):
+    """
+    아이템 삭제 API
+    Args:
+        item_type: 아이템 타입
+        item_id: 아이템 ID
+        db: 데이터베이스 세션
+    Returns:
+        아이템 삭제 성공 여부 (JSON)
+    """
     if item_service.remove_item(item_type, item_id, db):
         return {"success": True}
     else:
         return {"success": False}
 
 
-# 카메라 피드 캡처 함수
-def gen_frames():
-    cap = cv2.VideoCapture(0)
-    while True:
-        success, frame = cap.read()
-        if not success:
-            break
-        else:
-            ret, buffer = cv2.imencode(".jpg", frame)
-            frame = buffer.tobytes()
-            yield (b"--frame\r\n" b"Content-Type: image/jpeg\r\n\r\n" + frame + b"\r\n")
-
-
 @router.get("/camera_feed", dependencies=[Depends(manager)])
 def camera_feed():
+    """
+    카메라 피드 조회 API
+    Returns:
+        카메라 피드를 반환 (MJPEG)
+    """
     return StreamingResponse(
-        gen_frames(), media_type="multipart/x-mixed-replace; boundary=frame"
+        robot_service.get_robot_view(),
+        media_type="multipart/x-mixed-replace; boundary=frame",
     )
 
 
 @router.get("/camera", dependencies=[Depends(manager)], response_class=HTMLResponse)
 def show_camera(request: Request):
+    """
+    카메라 화면 조회 API
+    Args:
+        request: Request 객체
+    Returns:
+        카메라 화면 (HTML)
+    """
     return templates.TemplateResponse("camera.html", {"request": request})

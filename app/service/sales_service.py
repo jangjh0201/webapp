@@ -4,6 +4,13 @@ from models.models import Order, IceCream
 
 
 def get_sales_data(db: Session):
+    """
+    판매 데이터 조회 함수
+    Args:
+        db: 데이터베이스 세션
+    Returns:
+        sales_data: 판매 데이터 리스트
+    """
     today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
     one_month_ago = today - timedelta(days=30)
 
@@ -38,7 +45,17 @@ def get_sales_data(db: Session):
     return sales_data
 
 
-def process_data(sales_data):
+def process_data_for_sales(sales_data):
+    """
+    데이터 처리 함수 (아이스크림 매출액)
+    Args:
+        sales_data: 판매 데이터 리스트
+    Returns:
+        dates: 날짜 리스트
+        choco_values: 초코 아이스크림 매출액 리스트
+        mint_values: 민트 아이스크림 매출액 리스트
+        strawberry_values: 딸기 아이스크림 매출액 리스트
+    """
     choco_sales = {}
     mint_sales = {}
     strawberry_sales = {}
@@ -74,6 +91,16 @@ def process_data(sales_data):
 
 
 def process_data_for_volumes(sales_data):
+    """
+    데이터 처리 함수 (아이스크림 판매량)
+    Args:
+        sales_data: 판매 데이터 리스트
+    Returns:
+        dates: 날짜 리스트
+        choco_volume_values: 초코 아이스크림 판매량 리스트
+        mint_volume_values: 민트 아이스크림 판매량 리스트
+        strawberry_volume_values: 딸기 아이스크림 판매량 리스트
+    """
     choco_volumes = {}
     mint_volumes = {}
     strawberry_volumes = {}

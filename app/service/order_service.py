@@ -17,6 +17,15 @@ from fastapi import HTTPException
 
 
 def get_all_orders(db: Session):
+    """
+    모든 주문 정보 조회 함수
+    Args:
+        db: 데이터베이스 세션
+    Returns:
+        ice_creams: 모든 아이스크림 정보 리스트
+        toppings: 모든 토핑 정보 리스트
+        consumables: 모든 소모품 정보 리스트
+    """
     ice_creams = read_all_ice_creams(db)
     toppings = read_all_toppings(db)
     consumables = read_all_consumables(db)
@@ -25,6 +34,16 @@ def get_all_orders(db: Session):
 
 
 def add_order(ice_cream_id: int, topping_ids: str, consumable_ids: str, db: Session):
+    """
+    주문 추가 함수
+    Args:
+        ice_cream_id: 아이스크림 ID
+        topping_ids: 토핑 ID 리스트
+        consumable_ids: 소모품 ID 리스트
+        db: 데이터베이스 세션
+    Returns:
+        order: 주문 정보
+    """
     topping_ids_list = (
         [int(id) for id in topping_ids.split(",") if id] if topping_ids else []
     )
@@ -73,6 +92,14 @@ def add_order(ice_cream_id: int, topping_ids: str, consumable_ids: str, db: Sess
 
 
 async def add_order_by_kiosk(json_data: dict, db: Session):
+    """
+    키오스크 주문 추가 함수
+    Args:
+        json_data: 요청 JSON 데이터
+        db: 데이터베이스 세션
+    Returns:
+        order: 주문 정보
+    """
     detail_body = json_data.get("OR", {})
     icecream = detail_body.get("icecream")
     topping = detail_body.get("topping")
@@ -121,11 +148,27 @@ async def add_order_by_kiosk(json_data: dict, db: Session):
 
 
 def get_all_histories(db: Session):
+    """
+    모든 주문 정보 조회 함수
+    Args:
+        db: 데이터베이스 세션
+    Returns:
+        orders: 모든 주문 정보 리스트
+    """
     orders = read_all_orders(db)
     return orders
 
 
 def edit_order_time(db: Session, order_id: int, new_order_time: datetime):
+    """
+    주문 시간 수정 함수
+    Args:
+        db: 데이터베이스 세션
+        order_id: 주문 ID
+        new_order_time: 새로운 주문 시간
+    Returns:
+        order: 수정된 주문 정보
+    """
     order = db.query(Order).filter(Order.id == order_id).first()
     if not order:
         raise HTTPException(
