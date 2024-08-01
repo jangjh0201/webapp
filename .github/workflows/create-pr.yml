@@ -3,7 +3,7 @@ name: Create PR to main
 on:
   pull_request:
     branches:
-      - dev
+      - aris/dev
     types:
       - closed
 
