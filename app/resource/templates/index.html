@@ -1,6 +1,12 @@
-{% extends "header.html" %}
+{% extends "navbar.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/css/index.css">
+{% endblock %}
 
 {% block content %}
-<h1>튀르키예~즈?</h1>
-<img src="{{ url_for('static', path='/images/character.jpg') }}" alt="튀르키예~즈?">
+<div class="background-container">
+    <img src="/static/images/character_1.png" alt="HI5ER" class="character-img" id="character-image">
+</div>
+<script src="/static/js/characterRotation.js"></script>
 {% endblock %}

@@ -1,0 +1,20 @@
+{% extends "navbar.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/css/login.css">
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <h2>로그인</h2>
+    <form action="/auth/token" method="post">
+        <label for="username">사용자 이름</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">비밀번호</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">로그인</button>
+    </form>
+</div>
+{% endblock %}

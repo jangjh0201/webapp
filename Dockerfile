@@ -1,17 +1,19 @@
-# Dockerfile
+# Use the official Python image from the Docker Hub
+FROM python:3.10
 
-# 베이스 이미지 설정
-FROM python:3.9-slim
+RUN apt-get update && apt-get install -y libgl1-mesa-glx fonts-nanum
 
-# 작업 디렉토리 설정
+# Set the working directory
 WORKDIR /app
 
-# 필요한 패키지 설치
+# Copy the requirements file into the container
 COPY requirements.txt .
+
+# Install the dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 애플리케이션 파일 복사
+# Copy the rest of the application code
 COPY . .
 
-# FastAPI 서버 실행
+# Command to run the FastAPI application
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

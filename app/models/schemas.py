@@ -2,69 +2,62 @@ from pydantic import BaseModel
 from typing import List, Optional
 
 
-class IceCreamBase(BaseModel):
+class IceCream(BaseModel):
+    id: int
     name: str
     price: int
     quantity: int
-
-
-class IceCreamCreate(IceCreamBase):
-    pass
-
-
-class IceCream(IceCreamBase):
-    id: int
 
     class Config:
         orm_mode = True
 
 
-class ToppingBase(BaseModel):
+class Topping(BaseModel):
+    id: int
     name: str
     price: int
     quantity: int
-
-
-class ToppingCreate(ToppingBase):
-    pass
-
-
-class Topping(ToppingBase):
-    id: int
 
     class Config:
         orm_mode = True
 
 
-class ConsumableBase(BaseModel):
+class Consumable(BaseModel):
+    id: int
     name: str
     price: int
     quantity: int
-
-
-class ConsumableCreate(ConsumableBase):
-    pass
-
-
-class Consumable(ConsumableBase):
-    id: int
 
     class Config:
         orm_mode = True
 
 
-class OrderBase(BaseModel):
+class Order(BaseModel):
+    id: int
     ice_cream_id: int
-    toppings: Optional[List[int]] = None
-    consumables: Optional[List[int]] = None
-
-
-class OrderCreate(OrderBase):
-    pass
-
-
-class Order(OrderBase):
-    id: int
+    topping_ids: Optional[List[int]] = None
+    consumable_ids: Optional[List[int]] = None
 
     class Config:
         orm_mode = True
+
+
+class RobotLog(BaseModel):
+    id: int
+    status: int
+
+    class Config:
+        orm_mode = True
+
+
+class User(BaseModel):
+    username: str
+    password: str
+
+
+FAKE_USERS_DB = {
+    "addinedu": {
+        "username": "addinedu",
+        "password": "pinklab",  # 실제로는 해시된 비밀번호를 사용해야 합니다.
+    }
+}

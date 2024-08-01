@@ -1,0 +1,17 @@
+.sales-container {
+    display: flex;
+    flex-direction: column;  /* 세로 방향으로 배치 */
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.sales-graph {
+    width: 80%;  /* 그래프의 너비를 조정 */
+    margin-bottom: 2rem;  /* 그래프 간의 마진 */
+}
+
+.sales-graph img {
+    max-width: 100%;
+    height: auto;
+}

@@ -1,0 +1,33 @@
+{% extends "navbar.html" %}
+{% block head %}
+<link rel="stylesheet" href="/static/css/common.css">
+<link rel="stylesheet" href="/static/css/log.css">
+{% endblock %}
+{% block content %}
+<h2>로봇 로그</h2>
+
+{% if logs %}
+<div class="table-container">
+    <table class="log-table">
+        <thead>
+            <tr>
+                <th>로그 ID</th>
+                <th>상태</th>
+                <th>시간</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log.id }}</td>
+                <td>{{ log.status }}</td>
+                <td>{{ log.log_time }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p>로그가 없습니다.</p>
+{% endif %}
+{% endblock %}

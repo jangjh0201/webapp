@@ -4,7 +4,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 
-
 # .env 파일 로드
 load_dotenv()
 
@@ -24,3 +23,11 @@ def initialize_tables():
     Base.metadata.drop_all(bind=engine)
     # 테이블 생성
     Base.metadata.create_all(bind=engine)
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

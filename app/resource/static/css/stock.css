@@ -1,0 +1,39 @@
+/* static/css/stock.css */
+.inventory-container {
+    width: 80%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin: 2rem auto; /* 상하좌우 여백 추가 */
+}
+
+.inventory-category {
+    width: 80%; /* 기본 너비를 80%로 설정 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px; /* 각 테이블 하단에 공간 추가 */
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #fff; /* 흰색 배경 추가 */
+    transition: width 0.3s; /* 너비 변화에 대한 애니메이션 효과 */
+}
+
+.inventory-table {
+    width: 80%; /* 테이블 너비를 80%로 설정 */
+    border-collapse: collapse; /* 테이블 경계선 중복 제거 */
+    margin-bottom: 20px; /* 테이블 하단에 공간 추가 */
+}
+
+.inventory-table th, .inventory-table td {
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    text-align: center;
+    width: 50%; /* 열 너비를 50%로 설정 */
+}
+
+.inventory-table th {
+    background-color: #f5f5dc; /* 베이지색 배경 추가 */
+}

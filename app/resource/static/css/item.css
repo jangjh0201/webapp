@@ -1,0 +1,127 @@
+/* static/css/item.css */
+.form-container {
+    width: 80%; /* form-container 너비를 80%로 설정 */
+    max-width: 800px; /* 최대 너비 설정 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2rem auto;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #fff;
+}
+
+.form-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    align-items: center; /* 중앙 정렬 */
+}
+
+.form-group label {
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    width: 80%; /* 입력창과 셀렉트 박스 크기를 80%로 설정 */
+    max-width: 300px; /* 최대 너비 설정 */
+}
+
+form {
+    display: flex;
+    flex-direction: row; /* 가로로 정렬 */
+    flex-wrap: wrap; /* 줄바꿈 허용 */
+    gap: 0.1rem; /* 입력 창 사이의 공간 추가 */
+    justify-content: center; /* 중앙 정렬 */
+}
+
+form .form-group {
+    flex: 1; /* 각 요소가 동일한 너비를 가지도록 설정 */
+    min-width: 150px; /* 최소 너비 설정 */
+    align-items: center; /* 중앙 정렬 */
+}
+
+button, .delete-button {
+    padding: 0.5rem 1rem;
+    border: none;
+    background-color: #333;
+    color: white;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    font-size: 1rem; /* 버튼 폰트 크기를 줄임 */
+    white-space: nowrap; /* 버튼 텍스트 줄바꿈 방지 */
+    width: 100%; /* 버튼 너비를 100%로 설정 */
+    max-width: 150px; /* 최대 너비 설정 */
+    align-self: center; /* 버튼이 중앙에 오도록 설정 */
+    margin-top: 1rem; /* 버튼 상단에 여백 추가 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+button:hover, .delete-button:hover {
+    background-color: #555;
+}
+
+.inventory-container {
+    width: 80%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.inventory-category {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #fff; /* 흰색 배경 추가 */
+}
+
+.inventory-list {
+    list-style-type: none;
+    padding: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.inventory-list li {
+    width: 100%; /* 항목 너비를 100%로 설정 */
+    display: flex;
+    justify-content: space-between; /* 항목 내 요소들을 양쪽 끝으로 정렬 */
+    align-items: center; /* 요소들을 세로로 중앙 정렬 */
+}
+
+.inventory-list li .delete-button {
+    width: auto; /* 삭제 버튼 너비를 자동으로 설정 */
+    margin-left: 1rem; /* 항목과의 간격 추가 */
+}
+
+@media screen and (max-width: 768px) {
+    form {
+        flex-direction: column; /* 화면이 작아졌을 때 입력 창이 밑으로 내려오도록 설정 */
+        align-items: center; /* 입력 필드와 버튼을 중앙 정렬 */
+    }
+    
+    form .form-group,
+    button {
+        width: 80%; /* 입력 창과 버튼이 가로로 80%를 차지하도록 설정 */
+        max-width: 300px; /* 최대 너비 설정 */
+    }
+
+    .inventory-category {
+        width: 100%;
+    }
+}

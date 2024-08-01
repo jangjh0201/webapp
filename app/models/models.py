@@ -71,3 +71,13 @@ class Order(Base):
 
     def __repr__(self):
         return f"<Order(id={self.id}, ice_cream_id={self.ice_cream_id}, order_time={self.order_time})>"
+
+
+class RobotLog(Base):
+    __tablename__ = "robot_log"
+    id = Column(Integer, primary_key=True, index=True)
+    status = Column(Integer, nullable=False)
+    log_time = Column(DateTime(timezone=True), server_default=func.now())
+
+    def __repr__(self):
+        return f"<RobotLog(id={self.id}, status='{self.status}', log_time={self.log_time})>"

@@ -1,4 +1,8 @@
-{% extends "header.html" %}
+{% extends "navbar.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/css/item.css">
+{% endblock %}
 
 {% block content %}
 <h2>데이터 추가</h2>
@@ -18,11 +22,11 @@
         </div>
         <div class="form-group">
             <label for="item-price">가격</label>
-            <input type="number" id="item-price" name="item_price" required>
+            <input type="text" id="item-price" name="item_price" required oninput="validateNumberInput(this)">
         </div>
         <div class="form-group">
             <label for="item-quantity">수량</label>
-            <input type="number" id="item-quantity" name="item_quantity" required>
+            <input type="text" id="item-quantity" name="item_quantity" required oninput="validateNumberInput(this)">
         </div>
         <button type="submit">추가하기</button>
     </form>
@@ -104,5 +108,9 @@
             });
         });
     });
+
+    function validateNumberInput(input) {
+        input.value = input.value.replace(/[^0-9]/g, '');
+    }
 </script>
 {% endblock %}

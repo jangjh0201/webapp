@@ -1,0 +1,19 @@
+/* static/css/index.css */
+
+/* index.html 전용 스타일 */
+.background-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.character-img {
+    width: 50%; /* 화면 너비의 50%로 설정 */
+    max-width: 300px; /* 최대 너비 설정 */
+    height: auto; /* 비율에 맞게 높이 자동 조정 */
+    position: absolute;
+    bottom: 20%; /* 화면 아래쪽에 위치 */
+}

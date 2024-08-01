@@ -1,2 +1,6 @@
 .env
 docker-compose.yml
+
+# Python bytecode files
+*.pyc
+__pycache__/
