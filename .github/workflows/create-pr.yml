@@ -21,7 +21,7 @@ jobs:
       - name: Create Pull Request to main
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.GH_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           base: main
           branch: ${{ github.ref }}
           title: "Automated PR from dev to main"
