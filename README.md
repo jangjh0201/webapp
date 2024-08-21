@@ -46,8 +46,9 @@
   ```
   git clone https://github.com/aris-hi5/webapp.git
   ```
-  
-  <b>의존성 설치</b>
+  <div align=left>
+    <b>의존성 설치</b>
+  </div>
   ```
   <code>pip install -r requirements.txt</code>
   ```
