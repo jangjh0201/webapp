@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 # 프로젝트 루트 디렉토리를 sys.path에 추가
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from controller.user_controller import router as user_router
+from controller.user_controller import add_table, router as user_router
 from controller.manager_controller import router as manager_router
 from controller.auth_controller import router as auth_router
 from database.database import initialize_tables, SessionLocal
@@ -42,9 +42,13 @@ def add_test_data(db: Session):
     create_topping(db, "oreo", 700, 100)
     create_consumable(db, "cup", 0, 200)
 
+def add_tables(db: Session):
+    for _ in range(4):
+        add_table(db)
 
 # 테스트 데이터 추가
 add_test_data(db)
+add_tables(db)
 
 if __name__ == "__main__":
     import uvicorn
