@@ -64,7 +64,7 @@ def update_order(
 
 
 def update_order_time(db: Session, order_id: int, new_order_time: datetime):
-    order = db.query(Order).filter(Order.id == order_id).first()
+    order = read_order_by_id(db, order_id)
     order.order_time = new_order_time
     db.commit()
     db.refresh(order)
