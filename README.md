@@ -52,7 +52,7 @@
   </div>
   
   ```
-  <code>pip install -r requirements.txt</code>
+  pip install -r requirements.txt
   ```
 
 </div>
