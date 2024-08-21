@@ -40,7 +40,7 @@
   <h2>패키지 설치</h2>
 
   <div align=left>
-    <b style="text-align: left;">Git clone</b>
+    <b>Git clone</b>
   </div>
   
   ```
