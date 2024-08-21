@@ -39,10 +39,11 @@
   
   <h2>패키지 설치</h2>
   <b>Git clone</b>
-  <br>
-  <code>git clone https://github.com/aris-hi5/webapp.git</code>
-  <br>
+  ```
+  git clone https://github.com/aris-hi5/webapp.git
+  ```
   <b>의존성</b>
-  <br>
+  ```
   <code>pip install -r requirements.txt</code>
+  ```
 </div>
