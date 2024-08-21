@@ -39,7 +39,10 @@
   
   <h2>패키지 설치</h2>
 
-  <b>Git clone</b>
+  <div align=left>
+    <b style="text-align: left;">Git clone</b>
+  </div>
+  
   ```
   git clone https://github.com/aris-hi5/webapp.git
   ```
