@@ -54,6 +54,11 @@ class User(BaseModel):
     username: str
     password: str
 
+class Table(BaseModel):
+    id: int
+
+    class Config:
+        orm_mode = True
 
 FAKE_USERS_DB = {
     "addinedu": {

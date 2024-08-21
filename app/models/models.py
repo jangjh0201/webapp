@@ -34,7 +34,7 @@ class IceCream(Base):
     quantity = Column(Integer, nullable=False)
 
     def __repr__(self):
-        return f"<IceCream(id={self.id}, name='{self.name}', price={self.price}, quantity={self.quantity})>"
+        return f"<IceCream(id={self.id}, name={self.name}, price={self.price}, quantity={self.quantity})>"
 
 
 class Topping(Base):
@@ -45,7 +45,7 @@ class Topping(Base):
     quantity = Column(Integer, nullable=False)
 
     def __repr__(self):
-        return f"<Topping(id={self.id}, name='{self.name}', price={self.price}, quantity={self.quantity})>"
+        return f"<Topping(id={self.id}, name={self.name}, price={self.price}, quantity={self.quantity})>"
 
 
 class Consumable(Base):
@@ -56,7 +56,7 @@ class Consumable(Base):
     quantity = Column(Integer, nullable=False)
 
     def __repr__(self):
-        return f"<Consumable(id={self.id}, name='{self.name}', price={self.price}, quantity={self.quantity})>"
+        return f"<Consumable(id={self.id}, name={self.name}, price={self.price}, quantity={self.quantity})>"
 
 
 class Order(Base):
@@ -80,4 +80,12 @@ class RobotLog(Base):
     log_time = Column(DateTime(timezone=True), server_default=func.now())
 
     def __repr__(self):
-        return f"<RobotLog(id={self.id}, status='{self.status}', log_time={self.log_time})>"
+        return f"<RobotLog(id={self.id}, status={self.status}, log_time={self.log_time})>"
+
+class Table(Base):
+    __tablename__ = "table"
+    id = Column(Integer, primary_key=True, index=True)
+    status = Column(Integer, default=1, nullable=False)
+    
+    def __repr__(self):
+        return f"<Table(id={self.id}, status={self.status})>"
