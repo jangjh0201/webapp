@@ -9,7 +9,7 @@ class IceCream(BaseModel):
     quantity: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class Topping(BaseModel):
@@ -19,7 +19,7 @@ class Topping(BaseModel):
     quantity: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class Consumable(BaseModel):
@@ -29,7 +29,7 @@ class Consumable(BaseModel):
     quantity: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class Order(BaseModel):
@@ -39,7 +39,7 @@ class Order(BaseModel):
     consumable_ids: Optional[List[int]] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class RobotLog(BaseModel):
@@ -47,7 +47,7 @@ class RobotLog(BaseModel):
     status: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class User(BaseModel):
@@ -58,7 +58,7 @@ class Table(BaseModel):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 FAKE_USERS_DB = {
     "addinedu": {
