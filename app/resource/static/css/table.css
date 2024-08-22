@@ -1,8 +1,8 @@
-/* static/css/table.css */
 .table-container {
     width: 80%;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 기본 4열 */
+    gap: 20px; /* 버튼 간 간격 */
     justify-content: center;
     margin: 2rem auto;
     padding: 1rem;
@@ -12,34 +12,39 @@
 }
 
 .table-category {
-    width: 30%;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    margin: 10px;
-    transition: width 0.3s;
 }
 
 .selectable-box {
-    border: 1px solid #ccc;
+    border: none; /* 테두리 제거 */
     padding: 10px;
     margin: 5px;
     cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-    width: 100%;
+    transition: transform 0.3s;
     text-align: center;
     font-size: 1.25rem;
     border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: transparent; /* 배경색 제거 */
 }
 
-.selectable-box.available {
-    background-color: #4CAF50;
-    color: white;
+.selectable-box:hover {
+    transform: scale(1.05); /* 호버 시 약간 확대 */
 }
 
-.selectable-box.in-use {
-    background-color: #f44336;
-    color: white;
+.table-icon {
+    width: 100px;
+    height: auto;
+}
+
+.table-number {
+    margin-top: 10px;
+    font-size: 1rem;
+    color: #333; /* 번호 색상 */
 }
 
 .modal {
@@ -80,4 +85,17 @@
     color: #000;
     text-decoration: none;
     cursor: pointer;
+}
+
+/* 반응형 디자인을 위한 미디어 쿼리 */
+@media (max-width: 1024px) {
+    .table-container {
+        grid-template-columns: repeat(2, 1fr); /* 중간 크기 화면에서 2열 */
+    }
+}
+
+@media (max-width: 600px) {
+    .table-container {
+        grid-template-columns: repeat(1, 1fr); /* 작은 화면에서 1열 */
+    }
 }
