@@ -24,7 +24,7 @@ def add_table(db: Session):
     table = create_table(db)
     return table
     
-def get_table_by_id(table_id: float, db: Session):
+def get_table_by_id(table_id: int, db: Session):
     """
     특정 테이블 조회 함수
     Args:
@@ -47,9 +47,14 @@ def get_all_tables(db: Session):
         tables: 모든 테이블 리스트
     """
     tables = read_all_tables(db)
-    return tables
     
-def edit_table_status(table_id: float, json_data : dict, db: Session):
+    tables_list = []
+    for table in tables:
+        tables_list.append({"id": table.id, "status": table.status})
+    
+    return tables_list
+    
+def edit_table_status(table_id: int, json_data : dict, db: Session):
     """
     테이블 상태 업데이트 함수
     Args:
@@ -82,7 +87,7 @@ def edit_table_status(table_id: float, json_data : dict, db: Session):
         else:
             raise TableAlreadyInUseException("이미 사용 중인 테이블입니다.")
     
-def remove_table(table_id: float, db: Session):
+def remove_table(table_id: int, db: Session):
     """
     특정 테이블 삭제 함수
     Args:
