@@ -10,7 +10,7 @@ def create_table(db: Session):
     return table
 
 
-def read_table_by_id(db: Session, table_id: float):
+def read_table_by_id(table_id: int, db: Session):
     return db.query(Table).filter(Table.id == table_id).first()
 
 def read_all_tables(db: Session):
@@ -26,7 +26,7 @@ def update_table_status(
     db.refresh(table)
     return table
 
-def delete_table_by_id(db: Session, table_id: float):
+def delete_table_by_id(table_id: int, db: Session):
     table = db.query(Table).filter(Table.id == table_id).first()
     if table:
         db.delete(table)
