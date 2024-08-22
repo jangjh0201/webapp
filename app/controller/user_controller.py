@@ -127,8 +127,8 @@ def show_tables(db: Session = Depends(get_db)):
         테이블 리스트 반환
     """
     tables = table_service.get_all_tables(db)
-    print(tables)
-    return JSONResponse(status_code=200, content={tables})
+    
+    return JSONResponse(status_code=200, content=tables)
 
 
 @router.get("/table/{table_id}")
@@ -142,10 +142,10 @@ def show_table_by_id(table_id: int, db: Session = Depends(get_db)):
         특정 테이블 반환
     """
     table = table_service.get_table_by_id(db, table_id)
-    return JSONResponse(status_code=200, content={table})
+    return JSONResponse(status_code=200, content=table)
 
 @router.patch("/table/{table_id}")
-def change_table_status(table_id: int, request: Request, db: Session = Depends(get_db)):
+async def change_table_status(table_id: int, request: Request, db: Session = Depends(get_db)):
     """
     테이블 사용 상태 변경 API
     Args:
@@ -158,8 +158,9 @@ def change_table_status(table_id: int, request: Request, db: Session = Depends(g
         서버 오류 발생 시 500 에러 반환
     """
     try:
-        table_service.edit_table_status(table_id, request.json(), db)
-        return show_tables()
+        json_data = await request.json()
+        tables = table_service.edit_table_status(table_id, json_data, db)
+        return JSONResponse(status_code=200, content=tables)
     except TableNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
     except TableInUseableException as e:
