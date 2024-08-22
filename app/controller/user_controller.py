@@ -3,7 +3,8 @@ from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
 from database.database import get_db
-from service import order_service, robot_service
+from service import order_service, robot_service, table_service
+from error.error import TableAlreadyInUseException, TableInUseableException, TableNotFoundException
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/resource/templates")
@@ -103,6 +104,71 @@ async def add_robot_log(request: Request, db: Session = Depends(get_db)):
     robot_service.add_robot_log(await request.json(), db)
     return JSONResponse(status_code=201, content={"message": "로그가 저장되었습니다."})
 
+@router.post("/table")
+def add_table(db: Session = Depends(get_db)):
+    """
+    테이블 추가 API
+    Args:
+        db: 데이터베이스 세션
+    Returns:
+        테이블 추가 완료 시 201 반환
+    """
+    table_service.add_table(db)
+    return JSONResponse(status_code=201, content={"message": "테이블이 추가되었습니다."})
+
+@router.get("/table")
+def show_tables(db: Session = Depends(get_db)):
+    """
+    모든 테이블 조회 API
+    Args:
+        request: Request 객체
+        db: 데이터베이스 세션
+    Returns:
+        테이블 리스트 반환
+    """
+    tables = table_service.get_all_tables(db)
+    
+    return JSONResponse(status_code=200, content=tables)
+
+
+@router.get("/table/{table_id}")
+def show_table_by_id(table_id: int, db: Session = Depends(get_db)):
+    """
+    특정 테이블 조회 API
+    Args:
+        table_id: 테이블 ID
+        db: 데이터베이스 세션
+    Returns:
+        특정 테이블 반환
+    """
+    table = table_service.get_table_by_id(db, table_id)
+    return JSONResponse(status_code=200, content=table)
+
+@router.patch("/table/{table_id}")
+async def change_table_status(table_id: int, request: Request, db: Session = Depends(get_db)):
+    """
+    테이블 사용 상태 변경 API
+    Args:
+        table_id: 테이블 ID
+        db: 데이터베이스 세션
+    Returns:
+        테이블 사용 성공 시 200 반환
+        테이블 사용 실패 시 400 에러 반환
+        테이블을 찾을 수 없을 시 404 에러 반환
+        서버 오류 발생 시 500 에러 반환
+    """
+    try:
+        json_data = await request.json()
+        tables = table_service.edit_table_status(table_id, json_data, db)
+        return JSONResponse(status_code=200, content=tables)
+    except TableNotFoundException as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except TableInUseableException as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except TableAlreadyInUseException as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="서버 오류가 발생했습니다.")
 
 @router.post("/test")
 async def test_order(request: Request, db: Session = Depends(get_db)):
