@@ -5,6 +5,7 @@ from matplotlib import font_manager, rc
 from sqlalchemy.orm import Session
 from starlette.responses import HTMLResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
+from service import table_service
 from database.database import get_db
 from service import item_service, robot_service, sales_service, order_service
 from auth.auth import manager
@@ -286,3 +287,16 @@ def show_camera(request: Request):
         카메라 화면 (HTML)
     """
     return templates.TemplateResponse("camera.html", {"request": request})
+
+@router.get("/tables", dependencies=[Depends(manager)])
+def show_tables(request: Request, db: Session = Depends(get_db)):
+    """
+    모든 테이블 조회 API
+    Args:
+        request: Request 객체
+        db: 데이터베이스 세션
+    Returns:
+        테이블 상태 페이지 (HTML)
+    """
+    tables = table_service.get_all_tables(db)
+    return templates.TemplateResponse("table.html", {"request": request, "tables": tables})
