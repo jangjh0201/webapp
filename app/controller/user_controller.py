@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request, Form, Depends, HTTPException
 from sqlalchemy.orm import Session
-from starlette.responses import JSONResponse
+from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
 from database.database import get_db
 from service import order_service, robot_service, table_service
@@ -160,7 +160,7 @@ async def change_table_status(table_id: int, request: Request, db: Session = Dep
     try:
         json_data = await request.json()
         tables = table_service.edit_table_status(table_id, json_data, db)
-        return JSONResponse(status_code=200, content=tables)
+        return JSONResponse(status_code=200, content={"tables": tables})
     except TableNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
     except TableInUseableException as e:

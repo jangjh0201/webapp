@@ -18,19 +18,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Create a new branch from dev
-        run: |
-          git checkout dev
-          NEW_BRANCH="pr-${{ github.event.pull_request.number }}-to-main"
-          git checkout -b $NEW_BRANCH
-          git push origin $NEW_BRANCH
-
       - name: Create Pull Request to main
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           base: main
-          branch: $NEW_BRANCH
-          title: "Automated PR from dev to main for feature: ${{ github.event.pull_request.title }}"
-          body: "This PR was automatically created from dev to main after the feature branch was merged."
-          commit-message: "Automated PR: Merging changes from dev to main for feature: ${{ github.event.pull_request.title }}"
+          branch: ${{ github.ref }}
+          title: "Automated PR from dev to main"
+          body: "This PR was automatically created from dev to main."
+          commit-message: "Automated PR: Merging changes from dev to main"
