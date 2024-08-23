@@ -35,7 +35,7 @@ def get_table_by_id(table_id: int, db: Session):
     """
     table = read_table_by_id(db, table_id)
     if not table:
-        raise TableNotFoundException("테이블을 찾을 수 없습니다.")
+        raise TableNotFoundException("존재하지 않는 테이블입니다.")
     return table
 
 def get_all_tables(db: Session):
@@ -76,7 +76,7 @@ def edit_table_status(table_id: int, json_data : dict, db: Session):
             return get_all_tables(db)
         # 반환요청(1)이 들어오면 사용가능 에러 발생
         else:
-            raise TableInUseableException("사용 가능한 테이블입니다.")
+            raise TableInUseableException("이미 비어있는 테이블입니다.")
     # 테이블 상태가 사용중(0)일 때,
     else:
         # 반환요청(1)이 들어오면 사용가능(1)으로 변경
