@@ -1,0 +1,26 @@
+/* static/css/storagy.css */
+.storagy-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+    height: 100vh;
+}
+
+#toggleButton {
+    padding: 1rem 2rem;
+    font-size: 1.5rem;
+    border-radius: 0.5rem;
+    color: white;
+    border: none;
+    cursor: pointer;
+    background-color: #4CAF50;
+}
+
+#toggleButton[data-state="stop"] {
+    background-color: red;
+}
+
+#toggleButton:hover {
+    opacity: 0.9;
+}
