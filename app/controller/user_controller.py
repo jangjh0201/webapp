@@ -86,7 +86,7 @@ async def add_order_by_kiosk(request: Request, db: Session = Depends(get_db)):
     """
     try:
         result = await order_service.add_order_by_kiosk(await request.json(), db)
-        return JSONResponse(status_code=201, content={"order": result})
+        return JSONResponse(status_code=201, content={"OR": result})
     except HTTPException as e:
         return JSONResponse(status_code=e.status_code, content={"detail": e.detail})
 
@@ -159,8 +159,9 @@ async def change_table_status(table_id: int, request: Request, db: Session = Dep
     """
     try:
         json_data = await request.json()
-        tables = table_service.edit_table_status(table_id, json_data, db)
-        return JSONResponse(status_code=200, content={"tables": tables})
+        request_data = json_data.get("request")
+        tables = table_service.edit_table_status(table_id, request_data, db)
+        return JSONResponse(status_code=200, content={"TR": tables})
     except TableNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
     except TableInUseableException as e:
