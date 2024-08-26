@@ -52,7 +52,7 @@
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ status: newStatus })
+            body: JSON.stringify({ request: newStatus })
         })
         .then(response => {
             if (response.ok) {
