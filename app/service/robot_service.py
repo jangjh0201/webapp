@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from database.crud.robot_log import create_robot_log, read_all_robot_logs
 import cv2
-
+import socket
 
 def add_robot_log(json_data: dict, db: Session):
     """
@@ -49,3 +49,35 @@ def get_robot_view():
                 )
     finally:
         cap.release()
+
+def use_storagy(cmd):
+    """
+    스토리지 사용 함수
+    Args:
+        cmd: 스토리지 사용 명령어
+    Returns:
+        None
+    """
+    # TCP 소켓 설정
+    server_ip = '192.168.0.6'  # 상대방 IP 주소
+    server_port = 5001            # 상대방 포트 번호
+    
+    try:
+        # 소켓 생성
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            # 서버에 연결
+            sock.connect((server_ip, server_port))
+            
+            # 명령어 전송
+            sock.sendall(cmd.encode('utf-8'))
+            
+            # 서버로부터 응답 수신 (옵션)
+            response = sock.recv(1024).decode('utf-8')
+            print(f"Server response: {response}")
+    
+    except ConnectionRefusedError:
+        print("Connection refused. The server may be unavailable.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+    

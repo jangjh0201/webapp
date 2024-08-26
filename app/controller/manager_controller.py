@@ -300,3 +300,22 @@ def show_tables(request: Request, db: Session = Depends(get_db)):
     """
     tables = table_service.get_all_tables(db)
     return templates.TemplateResponse("table.html", {"request": request, "tables": tables})
+
+@router.get("/storagy", dependencies=[Depends(manager)])
+def show_storagy(request: Request):
+        return templates.TemplateResponse("storagy.html", {"request": request})
+
+@router.post("/storagy", dependencies=[Depends(manager)])
+async def handle_storagy_post(data: str = Form(...)):
+    """
+    storagy 경로의 POST 요청을 처리
+    Args:
+        data: Form을 통해 전송된 데이터
+    Returns:
+        서버로부터 받은 데이터를 출력 (JSON)
+    """
+    try:
+        robot_service.use_storagy(data)
+    except Exception as e:
+        print(f"Error: {e}")
+        raise HTTPException(status_code=400, detail="Invalid data format")
