@@ -303,16 +303,23 @@ def show_tables(request: Request, db: Session = Depends(get_db)):
 
 @router.get("/storagy", dependencies=[Depends(manager)])
 def show_storagy(request: Request):
-        return templates.TemplateResponse("storagy.html", {"request": request})
+    """
+    스토리지 제어 페이지 조회
+    Args:
+        request: Request 객체
+    Returns:
+        스토리지 제어 페이지 (HTML)
+    """
+    return templates.TemplateResponse("storagy.html", {"request": request})
 
 @router.post("/storagy", dependencies=[Depends(manager)])
 async def handle_storagy_post(data: str = Form(...)):
     """
-    storagy 경로의 POST 요청을 처리
+    스토리지 제어 요청을 처리
     Args:
         data: Form을 통해 전송된 데이터
     Returns:
-        서버로부터 받은 데이터를 출력 (JSON)
+        서버로부터 받은 요청 수행
     """
     try:
         robot_service.use_storagy(data)
