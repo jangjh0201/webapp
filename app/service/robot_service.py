@@ -59,22 +59,22 @@ def use_storagy(cmd):
         None
     """
     # TCP 소켓 설정
-    server_ip = '192.168.0.6'  # 상대방 IP 주소
+    server_ip = '192.168.0.7'  # 상대방 IP 주소
     server_port = 5001            # 상대방 포트 번호
     
     try:
         # 소켓 생성
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-            # 서버에 연결
-            sock.connect((server_ip, server_port))
+        # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        #     # 서버에 연결
+        #     sock.connect((server_ip, server_port))
             
-            # 명령어 전송
-            sock.sendall(cmd.encode('utf-8'))
+        #     # 명령어 전송
+        #     sock.sendall(cmd.encode('utf-8'))
             
-            # 서버로부터 응답 수신 (옵션)
-            response = sock.recv(1024).decode('utf-8')
-            print(f"Server response: {response}")
-    
+        #     # 서버로부터 응답 수신 (옵션)
+        #     response = sock.recv(1024).decode('utf-8')
+        #     print(f"Server response: {response}")
+        print(cmd)
     except ConnectionRefusedError:
         print("Connection refused. The server may be unavailable.")
     except Exception as e:
