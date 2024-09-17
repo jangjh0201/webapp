@@ -1,20 +1,21 @@
 <div align=center>
-  <h2>📃프로젝트 소개</h2>
-  <img src="./app/resource/static/images/character_1.png" alt="키오스크 홈" style="display:inline-block; width:20%; margin-right:20px;"/><br>
-  
-  <b>로봇팔과 비전센서를 활용한 HRI</b><br>
-  <b>돈두르마 퍼포먼스 무인 아이스크림 매장</b><br>
-  <br>
-  로봇공학, 인공지능, 컴퓨터 비전 등 다양한 기술을 통합한<br>
-  인간과 로봇이 상호 작용하는 무인 아이스크림 매장의 로봇 서비스 및 시스템을 개발하였습니다.
-  <br>
-  <br>
   <h2>서비스 소개</h2>
-
+  <br>
+  <img src="../images/blue_monitor.jpg" alt="키오스크 홈" style="display:inline-block; width:20%; margin-right:20px;"/><br>
+  <br> 
+  <h3>백오피스 페이지</h3>
+  <b>무인 아이스크림 매장 관리 서비스</b><br>
+  <br>
+  매장 운영을 업그레이드해 줄 관리 시스템입니다.<br>
+  실시간 데이터 분석, 통합 모니터링 등 손쉽게 서비스를 제어하고 관리할 수 있습니다.<br>
+  <br>
+  
   <h3>ℹ️상세페이지 <a href="https://jangjh0201.notion.site/e2b2dddc214442ad8f01406454988626?pvs=4" title="백오피스 페이지">이동</a>ℹ️</h3>
   
-  <h2>🕐개발 기간</h2>
-  2024.07.01 ~ 2024.07.26
+  <h2>개발 기간</h2>
+  <b>총 개발기간</b><br>
+  2024/7/1 ~ 2024/8/30<br>
+  <br>
   
   <h2>패키지 설치</h2>
 
