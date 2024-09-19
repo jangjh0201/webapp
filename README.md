@@ -17,7 +17,7 @@
     <tr>
       <td align="center" width="33%">
         <h3>웹</h3>
-        <img src="./app/resource/static/images/웹 홈화면.gjf" alt="웹 홈" width="100%">
+        <img src="./app/resource/static/images/웹 홈화면.gif" alt="웹 홈" width="100%">
       </td>
       <td align="center" width="33%">
         <h3>모바일</h3>
