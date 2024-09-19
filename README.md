@@ -1,7 +1,7 @@
 <div align=center>
   <h2>서비스 소개</h2>
   <br>
-  <img src="./app/resource/static/images/blue_monitor.jpg" alt="키오스크 홈" style="display:inline-block; width:50%;"/><br>
+  <img src="./app/resource/static/images/blue_monitor.jpg" alt="키오스크 홈" style="display:inline-block; width:70%;"/><br>
   <br> 
   <h3>백오피스 페이지</h3>
   <b>무인 아이스크림 매장 관리 서비스</b><br>
