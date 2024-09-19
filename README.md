@@ -11,6 +11,15 @@
   <br>
   
   <h3>ℹ️상세페이지 <a href="https://jangjh0201.notion.site/e2b2dddc214442ad8f01406454988626?pvs=4" title="백오피스 페이지">이동</a>ℹ️</h3>
+
+  <h2>다이어그램</h2>
+  <br>
+  <h3>ERD</h3>
+  <img src="./app/resource/static/images/erd.jpg" alt="키오스크 홈" style="display:inline-block; width:50%;"/><br>
+  <br>
+  <h3>플로우차트</h3>
+  
+  <br>
   
   <h2>개발 기간</h2>
   <b>총 개발기간</b><br>
