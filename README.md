@@ -1,7 +1,7 @@
 <div align=center>
   <h2>서비스 소개</h2>
   <br>
-  <img src="./app/resource/static/images/blue_monitor.jpg" alt="키오스크 홈" style="display:inline-block; width:70%;"/><br>
+  <img src="./app/resource/static/images/blue_monitor.jpg" alt="키오스크 홈" style="display:inline-block; width:50%;"/><br>
   <br> 
   <h3>백오피스 페이지</h3>
   <b>무인 아이스크림 매장 관리 서비스</b><br>
@@ -11,9 +11,9 @@
   <br>
   
   <h3>ℹ️상세페이지 <a href="https://jangjh0201.notion.site/e2b2dddc214442ad8f01406454988626?pvs=4" title="백오피스 페이지">이동</a>ℹ️</h3>
-
-  <h2>다이어그램</h2>
   <br>
+  
+  <h2>다이어그램</h2>
   <h3>ERD</h3>
   <img src="./app/resource/static/images/erd.png" alt="erd" style="display:inline-block; width:50%;"/><br>
   <br>
