@@ -17,11 +17,11 @@
     <tr>
       <td align="center" width="33%">
         <h3>웹</h3>
-        <img src="../images/web_home.png" alt="웹 홈" width="100%">
+        <img src="./app/resource/static/images/웹 홈화면.gjf" alt="웹 홈" width="100%">
       </td>
       <td align="center" width="33%">
         <h3>모바일</h3>
-        <img src="../images/mobile_sales.jpg" alt="모바일 매출" width="30%">
+        <img src="./app/resource/static/images/모바일 홈화면.gif" alt="모바일 매출" width="30%">
       </td>
     </tr>
   </table>
