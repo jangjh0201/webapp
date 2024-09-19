@@ -13,12 +13,21 @@
   <h3>ℹ️상세페이지 <a href="https://jangjh0201.notion.site/e2b2dddc214442ad8f01406454988626?pvs=4" title="백오피스 페이지">이동</a>ℹ️</h3>
   <br>
   
-  <h2>다이어그램</h2>
+  <table>
+    <tr>
+      <td align="center" width="33%">
+        <h3>웹</h3>
+        <img src="../images/web_home.png" alt="웹 홈" width="100%">
+      </td>
+      <td align="center" width="33%">
+        <h3>모바일</h3>
+        <img src="../images/mobile_sales.jpg" alt="모바일 매출" width="30%">
+      </td>
+    </tr>
+  </table>
+  
   <h3>ERD</h3>
   <img src="./app/resource/static/images/erd.png" alt="erd" style="display:inline-block; width:50%;"/><br>
-  <br>
-  <h3>플로우차트</h3>
-  
   <br>
   
   <h2>개발 기간</h2>
