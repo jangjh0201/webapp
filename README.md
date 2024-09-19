@@ -15,7 +15,7 @@
   <h2>다이어그램</h2>
   <br>
   <h3>ERD</h3>
-  <img src="./app/resource/static/images/erd.jpg" alt="키오스크 홈" style="display:inline-block; width:50%;"/><br>
+  <img src="./app/resource/static/images/erd.jpg" alt="erd" style="display:inline-block; width:50%;"/><br>
   <br>
   <h3>플로우차트</h3>
   
