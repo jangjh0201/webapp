@@ -29,9 +29,57 @@
   <h3>ERD</h3>
   <img src="./app/resource/static/images/erd.png" alt="erd" style="display:inline-block; width:50%;"/><br>
   <br>
+
+  <h2>기술 스택</h2>
+  <table border="1" cellspacing="0" cellpadding="10">
+    <tr>
+      <th width="100px">항목</th>
+      <th>기술</th>
+      <th width="100px">항목</th>
+      <th>기술</th>
+    </tr>
+    <tr>
+      <td width="100px"><strong>Tools</strong></td>
+      <td>Vscode, DBeaver</td>
+      <td width="100px"><strong>Language</strong></td>
+      <td>Python, Linux</td>
+    </tr>
+    <tr>
+      <td width="100px"><strong>Framework</strong></td>
+      <td>FastAPI</td>
+      <td width="100px"><strong>Database</strong></td>
+      <td>MySQL</td>
+    </tr>
+    <tr>
+      <td width="100px"><strong>Infra</strong></td>
+      <td>Docker</td>
+      <td width="100px"><strong>Security</strong></td>
+      <td>JWT</td>
+    </tr>
+    <tr>
+      <td width="100px"><strong>Version control</strong></td>
+      <td>Git, GitHub</td>
+      <td width="100px"><strong>CI/CD</strong></td>
+      <td>GitHub Actions</td>
+    </tr>
+    <tr>
+      <td width="100px"><strong>Testing</strong></td>
+      <td>PyTest, Postman</td>
+      <td width="100px"><strong>Documentation</strong></td>
+      <td>Swagger</td>
+    </tr>
+    <tr>
+      <td width="100px"><strong>Code quality</strong></td>
+      <td>Flake8, Black</td>
+      <td width="100px"><strong>UI</strong></td>
+      <td>Jinja2Template</td>
+    </tr>
+  </table>
+
+
+  <br>
   
   <h2>개발 기간</h2>
-  <b>총 개발기간</b><br>
   2024/7/1 ~ 2024/8/30<br>
   <br>
   
