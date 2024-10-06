@@ -72,7 +72,7 @@ def show_history(request: Request, db: Session = Depends(get_db)):
 
 
 # 한글 폰트 설정
-font_path = "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"
+font_path = "app/resource/NanumGothic-Regular.ttf"
 font_manager.fontManager.addfont(font_path)
 rc("font", family="NanumGothic")
 
