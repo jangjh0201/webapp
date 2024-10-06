@@ -1,0 +1,79 @@
+{% extends "navbar.html" %}
+{% block head %}
+<link rel="stylesheet" href="/static/css/common.css">
+<link rel="stylesheet" href="/static/css/table.css">
+{% endblock %}
+{% block content %}
+<h2>테이블 관리</h2>
+<div class="table-container">
+    {% for table in tables %}
+    <div class="table-category">
+        <div class="selectable-box"
+             onclick="changeTableStatus({{ table.id }}, {{ table.status }})">
+            <img src="{% if table.status == 1 %}/static/images/table_color.png{% else %}/static/images/table_mono.png{% endif %}" 
+                 alt="Table {{ table.id }}" class="table-icon">
+            <div class="table-number">테이블 {{ table.id }}</div> <!-- 테이블 번호 추가 -->
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="modal" id="success-modal" onclick="closeModal(event)">
+    <div class="modal-content">
+        <span class="close-button" onclick="closeModal(event)">&times;</span>
+        <p>테이블 상태가 변경되었습니다.</p>
+    </div>
+</div>
+
+<div class="modal" id="error-modal" onclick="closeModal(event)">
+    <div class="modal-content">
+        <span class="close-button" onclick="closeModal(event)">&times;</span>
+        <p>테이블 상태 변경에 실패했습니다.</p>
+    </div>
+</div>
+
+<script>
+    let pendingStatusChange = false;
+
+    function closeModal(event) {
+        if (event.target.classList.contains('modal') || event.target.classList.contains('close-button')) {
+            event.target.closest('.modal').style.display = 'none';
+            if (pendingStatusChange) {
+                location.reload();
+                pendingStatusChange = false;
+            }
+        }
+    }
+
+    function changeTableStatus(tableId, currentStatus) {
+        const newStatus = currentStatus === 1 ? 0 : 1;
+        fetch(`/table/${tableId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ status: newStatus })
+        })
+        .then(response => {
+            if (response.ok) {
+                pendingStatusChange = true;
+                document.getElementById('success-modal').style.display = 'block';
+                setTimeout(() => {
+                    if (pendingStatusChange) {
+                        document.getElementById('success-modal').style.display = 'none';
+                        location.reload();
+                        pendingStatusChange = false;
+                    }
+                }, 1000);
+            } else {
+                document.getElementById('error-modal').style.display = 'block';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('error-modal').style.display = 'block';
+        });
+    }
+</script>
+
+{% endblock %}
