@@ -28,7 +28,7 @@ def show_logs(request: Request, db: Session = Depends(get_db)):
         모든 로그 정보 리스트 반환 (HTML)
     """
     logs = robot_service.get_all_logs(db)
-    return templates.TemplateResponse("log.html", {"request": request, "logs": logs})
+    return templates.TemplateResponse("log.jinja2", {"request": request, "logs": logs})
 
 
 @router.get("/stock", dependencies=[Depends(manager)])
@@ -43,7 +43,7 @@ def show_inventory(request: Request, db: Session = Depends(get_db)):
     """
     ice_creams, toppings, consumables = item_service.get_all_inventories(db)
     return templates.TemplateResponse(
-        "stock.html",
+        "stock.jinja2",
         {
             "request": request,
             "inventory_data": {
@@ -67,7 +67,7 @@ def show_history(request: Request, db: Session = Depends(get_db)):
     """
     orders = order_service.get_all_histories(db)
     return templates.TemplateResponse(
-        "history.html", {"request": request, "orders": orders}
+        "history.jinja2", {"request": request, "orders": orders}
     )
 
 
@@ -192,7 +192,7 @@ def show_sales(request: Request, db: Session = Depends(get_db)):
     plt.close()
 
     return templates.TemplateResponse(
-        "sales.html",
+        "sales.jinja2",
         {
             "request": request,
             "total_sales_data": png_image_total_sales_b64_string,
@@ -213,7 +213,7 @@ def show_item(request: Request, db: Session = Depends(get_db)):
     """
     ice_creams, toppings, consumables = item_service.get_all_items(db)
     return templates.TemplateResponse(
-        "item.html",
+        "item.jinja2",
         {
             "request": request,
             "ice_creams": ice_creams,
@@ -286,7 +286,8 @@ def show_camera(request: Request):
     Returns:
         카메라 화면 (HTML)
     """
-    return templates.TemplateResponse("camera.html", {"request": request})
+    return templates.TemplateResponse("camera.jinja2", {"request": request})
+
 
 @router.get("/tables", dependencies=[Depends(manager)])
 def show_tables(request: Request, db: Session = Depends(get_db)):
@@ -299,7 +300,10 @@ def show_tables(request: Request, db: Session = Depends(get_db)):
         테이블 상태 페이지 (HTML)
     """
     tables = table_service.get_all_tables(db)
-    return templates.TemplateResponse("table.html", {"request": request, "tables": tables})
+    return templates.TemplateResponse(
+        "table.jinja2", {"request": request, "tables": tables}
+    )
+
 
 @router.get("/storagy", dependencies=[Depends(manager)])
 def show_storagy(request: Request):
@@ -310,7 +314,8 @@ def show_storagy(request: Request):
     Returns:
         스토리지 제어 페이지 (HTML)
     """
-    return templates.TemplateResponse("storagy.html", {"request": request})
+    return templates.TemplateResponse("storagy.jinja2", {"request": request})
+
 
 @router.post("/storagy", dependencies=[Depends(manager)])
 async def handle_storagy_post(data: str = Form(...)):

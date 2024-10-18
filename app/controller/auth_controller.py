@@ -18,7 +18,7 @@ def login_page(request: Request):
     Returns:
         로그인 페이지 반환 (HTML)
     """
-    return templates.TemplateResponse("login.html", {"request": request})
+    return templates.TemplateResponse("login.jinja2", {"request": request})
 
 
 @router.post("/auth/token")
