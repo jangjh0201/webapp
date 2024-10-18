@@ -1,5 +1,6 @@
 from datetime import datetime
 from sqlalchemy.orm import Session
+from service import table_service
 from database.crud.ice_cream import read_all_ice_creams, read_ice_cream_by_id
 from database.crud.topping import read_all_toppings, read_topping_by_id
 from database.crud.consumable import (
@@ -103,6 +104,7 @@ async def add_order_by_kiosk(json_data: dict, db: Session):
     detail_body = json_data.get("OR", {})
     icecream = detail_body.get("icecream")
     topping = detail_body.get("topping")
+    tableNum = detail_body.get("table")
 
     if not icecream:
         raise HTTPException(status_code=400, detail=["아이스크림 선택은 필수입니다."])
@@ -141,8 +143,11 @@ async def add_order_by_kiosk(json_data: dict, db: Session):
 
     order = create_order(db, ice_cream_id, topping_ids_list, consumable_ids=[])
 
+    tables = table_service.get_all_tables(db) if tableNum == 0 else table_service.edit_table_status(tableNum, 0, db)
+
     response_content = {
         "orderId": order.id,
+        "tables": tables,
     }
     return response_content
 

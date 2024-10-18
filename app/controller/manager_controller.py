@@ -28,7 +28,7 @@ def show_logs(request: Request, db: Session = Depends(get_db)):
         모든 로그 정보 리스트 반환 (HTML)
     """
     logs = robot_service.get_all_logs(db)
-    return templates.TemplateResponse("log.html", {"request": request, "logs": logs})
+    return templates.TemplateResponse("log.jinja2", {"request": request, "logs": logs})
 
 
 @router.get("/stock", dependencies=[Depends(manager)])
@@ -43,7 +43,7 @@ def show_inventory(request: Request, db: Session = Depends(get_db)):
     """
     ice_creams, toppings, consumables = item_service.get_all_inventories(db)
     return templates.TemplateResponse(
-        "stock.html",
+        "stock.jinja2",
         {
             "request": request,
             "inventory_data": {
@@ -67,12 +67,12 @@ def show_history(request: Request, db: Session = Depends(get_db)):
     """
     orders = order_service.get_all_histories(db)
     return templates.TemplateResponse(
-        "history.html", {"request": request, "orders": orders}
+        "history.jinja2", {"request": request, "orders": orders}
     )
 
 
 # 한글 폰트 설정
-font_path = "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"
+font_path = "app/resource/NanumGothic-Regular.ttf"
 font_manager.fontManager.addfont(font_path)
 rc("font", family="NanumGothic")
 
@@ -192,7 +192,7 @@ def show_sales(request: Request, db: Session = Depends(get_db)):
     plt.close()
 
     return templates.TemplateResponse(
-        "sales.html",
+        "sales.jinja2",
         {
             "request": request,
             "total_sales_data": png_image_total_sales_b64_string,
@@ -213,7 +213,7 @@ def show_item(request: Request, db: Session = Depends(get_db)):
     """
     ice_creams, toppings, consumables = item_service.get_all_items(db)
     return templates.TemplateResponse(
-        "item.html",
+        "item.jinja2",
         {
             "request": request,
             "ice_creams": ice_creams,
@@ -286,7 +286,8 @@ def show_camera(request: Request):
     Returns:
         카메라 화면 (HTML)
     """
-    return templates.TemplateResponse("camera.html", {"request": request})
+    return templates.TemplateResponse("camera.jinja2", {"request": request})
+
 
 @router.get("/tables", dependencies=[Depends(manager)])
 def show_tables(request: Request, db: Session = Depends(get_db)):
@@ -299,4 +300,34 @@ def show_tables(request: Request, db: Session = Depends(get_db)):
         테이블 상태 페이지 (HTML)
     """
     tables = table_service.get_all_tables(db)
-    return templates.TemplateResponse("table.html", {"request": request, "tables": tables})
+    return templates.TemplateResponse(
+        "table.jinja2", {"request": request, "tables": tables}
+    )
+
+
+@router.get("/storagy", dependencies=[Depends(manager)])
+def show_storagy(request: Request):
+    """
+    스토리지 제어 페이지 조회
+    Args:
+        request: Request 객체
+    Returns:
+        스토리지 제어 페이지 (HTML)
+    """
+    return templates.TemplateResponse("storagy.jinja2", {"request": request})
+
+
+@router.post("/storagy", dependencies=[Depends(manager)])
+async def handle_storagy_post(data: str = Form(...)):
+    """
+    스토리지 제어 요청을 처리
+    Args:
+        data: Form을 통해 전송된 데이터
+    Returns:
+        서버로부터 받은 요청 수행
+    """
+    try:
+        robot_service.use_storagy(data)
+    except Exception as e:
+        print(f"Error: {e}")
+        raise HTTPException(status_code=400, detail="Invalid data format")

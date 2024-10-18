@@ -43,7 +43,7 @@ def add_test_data(db: Session):
     create_consumable(db, "cup", 0, 200)
 
 def add_tables(db: Session):
-    for _ in range(4):
+    for _ in range(3):
         add_table(db)
 
 # 테스트 데이터 추가

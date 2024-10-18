@@ -1,14 +1,12 @@
 .table-container {
     width: 80%;
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 기본 4열 */
+    grid-template-columns: repeat(3, 1fr); /* 기본 4열 */
     gap: 20px; /* 버튼 간 간격 */
     justify-content: center;
     margin: 2rem auto;
     padding: 1rem;
-    border: 1px solid #ccc;
     border-radius: 10px;
-    background-color: #fff;
 }
 
 .table-category {
@@ -25,6 +23,7 @@
     transition: transform 0.3s;
     text-align: center;
     font-size: 1.25rem;
+    font-weight: 700;
     border-radius: 10px;
     display: flex;
     flex-direction: column;

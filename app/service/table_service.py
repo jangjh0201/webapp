@@ -54,24 +54,22 @@ def get_all_tables(db: Session):
     
     return tables_list
     
-def edit_table_status(table_id: int, json_data : dict, db: Session):
+def edit_table_status(table_id: int, request_data : int, db: Session):
     """
     테이블 상태 업데이트 함수
     Args:
         db: 데이터베이스 세션
         table_id: 테이블 아이디
-    Returns:
         table: 업데이트된 테이블 리스트
+    Returns:
     """
-    request_status = json_data.get("status")
-    
     # 테이블 조회
     table = get_table_by_id(db, table_id)
 
     # 테이블 상태가 사용가능(1)일 때,
     if table.status == 1: 
         # 사용요청(0)이 들어오면 사용중(0)으로 변경
-        if request_status == 0:
+        if request_data == 0:
             table = update_table_status(db, table, status=0)
             return get_all_tables(db)
         # 반환요청(1)이 들어오면 사용가능 에러 발생
@@ -80,7 +78,7 @@ def edit_table_status(table_id: int, json_data : dict, db: Session):
     # 테이블 상태가 사용중(0)일 때,
     else:
         # 반환요청(1)이 들어오면 사용가능(1)으로 변경
-        if request_status == 1:
+        if request_data == 1:
             table = update_table_status(db, table, status=1)
             return get_all_tables(db)
         # 사용요청(0)이 들어오면 이미 사용중 에러 발생

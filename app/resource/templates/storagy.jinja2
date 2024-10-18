@@ -1,0 +1,59 @@
+{% extends "navbar.jinja2" %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/css/common.css">
+<link rel="stylesheet" href="/static/css/storagy.css">
+{% endblock %}
+
+{% block content %}
+<h2>스토리지</h2>
+<div class="background-container">
+    <img src="/static/images/map.png" alt="map">
+</div>
+<div class="storagy-container">
+    <!-- 버튼 상태를 관리하는 span 태그 추가 -->
+    <span id="buttonState" data-state="start">
+        <!-- 버튼 추가 -->
+        <button id="toggleButton">추종 시작</button>
+    </span>
+</div>
+
+<!-- JavaScript 코드 추가 -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var button = document.getElementById('toggleButton');
+        var buttonState = document.getElementById('buttonState');
+
+        button.addEventListener('click', function() {
+            var currentState = buttonState.getAttribute('data-state');
+            var newState = currentState === 'start' ? 'stop' : 'start';
+            var newLabel = currentState === 'start' ? '추종 중단' : '추종 시작';
+            var newColor = currentState === 'start' ? 'red' : '#4CAF50';
+            var dataValue = currentState === 'start' ? 'start' : 'stop';
+
+            // 서버로 데이터 전송
+            fetch('/storagy', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'data=' + encodeURIComponent(dataValue)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+
+                // 버튼의 텍스트와 색상 변경
+                button.textContent = newLabel;
+                button.style.backgroundColor = newColor;
+
+                // 버튼의 상태 변경
+                buttonState.setAttribute('data-state', newState);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+    });
+</script>
+{% endblock %}

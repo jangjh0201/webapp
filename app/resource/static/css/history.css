@@ -3,9 +3,7 @@
     width: 80%; /* 테이블 컨테이너가 화면 전체 너비를 차지하도록 설정 */
     margin: 2rem auto;
     padding: 1rem;
-    border: 1px solid #ccc;
     border-radius: 10px;
-    background-color: #fff;
     overflow-x: auto; /* 가로 스크롤 허용 */
 }
 
@@ -13,11 +11,12 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 0.875rem; /* 기본 글꼴 크기 조정 */
+    border: #333;
 }
 
 .history-table th,
 .history-table td {
-    border: 1px solid #ccc;
+    border: 1px solid #888;
     padding: 0.5rem;
     text-align: center;
 }
@@ -28,10 +27,18 @@
     font-weight: bold;
 }
 
-.history-table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
+.history-table thead tr th {
+    background-color: #888;
+    border: #333;
 }
 
+/* .history-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+} */
+
+.history-table tbody tr {
+    background-color: #f9f9f9;
+}
 .history-table tbody tr:hover {
     background-color: #f1f1f1;
 }

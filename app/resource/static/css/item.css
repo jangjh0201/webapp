@@ -7,9 +7,7 @@
     align-items: center;
     margin: 2rem auto;
     padding: 1rem;
-    border: 1px solid #ccc;
     border-radius: 10px;
-    background-color: #fff;
 }
 
 .form-group {
@@ -20,6 +18,19 @@
     align-items: center; /* 중앙 정렬 */
 }
 
+/* form-group 요소들의 모서리를 둥글게 만듭니다 */
+.form-group input[type="text"], 
+.form-group select, 
+button[type="submit"] {
+    border-radius: 10px; /* 원하는 만큼 값을 조정할 수 있습니다 */
+}
+
+/* delete 버튼의 모서리를 둥글게 만듭니다 */
+.delete-button {
+    border-radius: 10px; /* 원하는 만큼 값을 조정할 수 있습니다 */
+}
+
+
 .form-group label {
     margin-bottom: 0.5rem;
     font-weight: bold;
@@ -28,7 +39,7 @@
 .form-group input,
 .form-group select {
     padding: 0.5rem;
-    border: 1px solid #ccc;
+    border: 1px solid #888;
     border-radius: 0.25rem;
     width: 80%; /* 입력창과 셀렉트 박스 크기를 80%로 설정 */
     max-width: 300px; /* 최대 너비 설정 */
@@ -51,7 +62,7 @@ form .form-group {
 button, .delete-button {
     padding: 0.5rem 1rem;
     border: none;
-    background-color: #333;
+    background-color: #888;
     color: white;
     cursor: pointer;
     border-radius: 0.25rem;
@@ -82,7 +93,7 @@ button:hover, .delete-button:hover {
     flex-direction: column;
     align-items: center;
     margin-bottom: 20px;
-    border: 1px solid #ccc;
+    border: 1px solid #888;
     border-radius: 10px;
     padding: 10px;
     background-color: #fff; /* 흰색 배경 추가 */

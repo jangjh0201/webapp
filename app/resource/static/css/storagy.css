@@ -1,0 +1,39 @@
+.background-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    width: 80%; /* 양쪽에 10%씩 마진을 줌 */
+    max-width: 748px; /* 기본 이미지 크기 */
+}
+
+.background-container img {
+    width: 100%; /* 컨테이너의 너비에 맞춰 이미지를 조정 */
+    height: auto; /* 이미지의 비율을 유지하면서 높이 조정 */
+}
+
+/* static/css/storagy.css */
+.storagy-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+#toggleButton {
+    padding: 1rem 2rem;
+    font-size: 1.5rem;
+    border-radius: 0.5rem;
+    color: white;
+    border: none;
+    cursor: pointer;
+    background-color: #4CAF50;
+}
+
+#toggleButton[data-state="stop"] {
+    background-color: red;
+}
+
+#toggleButton:hover {
+    opacity: 0.9;
+}
