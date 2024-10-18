@@ -14,10 +14,8 @@
     flex-direction: column;
     align-items: center;
     margin-bottom: 20px; /* 각 테이블 하단에 공간 추가 */
-    border: 1px solid #ccc;
     border-radius: 10px;
     padding: 10px;
-    background-color: #fff; /* 흰색 배경 추가 */
     transition: width 0.3s; /* 너비 변화에 대한 애니메이션 효과 */
 }
 
@@ -28,12 +26,16 @@
 }
 
 .inventory-table th, .inventory-table td {
-    border: 1px solid #ccc;
+    border: 1px solid #888;
     padding: 0.5rem;
     text-align: center;
     width: 50%; /* 열 너비를 50%로 설정 */
 }
 
 .inventory-table th {
-    background-color: #f5f5dc; /* 베이지색 배경 추가 */
+    background-color: #888; /* 베이지색 배경 추가 */
+}
+
+.inventory-table tbody tr {
+    background-color: #f9f9f9; /* 테이블 행 배경색 추가 */
 }

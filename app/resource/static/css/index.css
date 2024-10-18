@@ -1,6 +1,6 @@
 /* static/css/index.css */
 
-/* index.html 전용 스타일 */
+/* index.jinja2 전용 스타일 */
 .background-container {
     width: 100%;
     height: 100%;

@@ -1,4 +1,4 @@
-{% extends "navbar.html" %}
+{% extends "navbar.jinja2" %}
 {% block head %}
 <link rel="stylesheet" href="/static/css/common.css">
 <link rel="stylesheet" href="/static/css/table.css">
@@ -52,7 +52,7 @@
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ status: newStatus })
+            body: JSON.stringify({ request: newStatus })
         })
         .then(response => {
             if (response.ok) {
